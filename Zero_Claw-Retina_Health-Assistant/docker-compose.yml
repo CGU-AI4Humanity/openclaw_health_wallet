@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+
+  retina-tool:
+    build:
+      context: ./retina-tool
+
+    container_name: retina-tool
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./shared-images:/shared-images
+
+    restart: unless-stopped
+
+  retina-mcp:
+    build:
+      context: ./retina-mcp
+
+    container_name: retina-mcp
+
+    ports:
+      - "8001:8000"
+
+    depends_on:
+      - retina-tool
+
+    environment:
+      RETINA_URL: "http://retina-tool:8000/predict"
+      RETINA_HEALTH_URL: "http://retina-tool:8000/health"
+
+    volumes:
+      - ./shared-images:/shared-images
+
+    restart: unless-stopped
