@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Initialize MyWellWallet-compatible SQLite — Brandon Medina
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

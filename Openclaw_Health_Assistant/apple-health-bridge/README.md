@@ -1,6 +1,10 @@
-# Apple Health bridge (planned)
+# Apple Health bridge
 
-Ingest Apple Health data into the same `health_*` tables MyWellWallet uses on iOS (`health_glucose`, `health_heart_rate`, `health_steps`, `health_blood_pressure`, `health_lab_results`, `health_sync_settings`).
+**Lead:** Mahesh Balan — Apple Health integration and sync into MyWellWallet-compatible SQLite `health_*` tables.
+
+SQLite schema and MCP data access: **Brandon Medina**. OpenClaw MCP wiring: **Leonard Bryant**.
+
+Ingest Apple Health data into the same tables as MyWellWallet iOS (`health_glucose`, `health_heart_rate`, `health_steps`, `health_blood_pressure`, `health_lab_results`, `health_sync_settings`).
 
 ## macOS considerations
 
@@ -10,12 +14,22 @@ Ingest Apple Health data into the same `health_*` tables MyWellWallet uses on iO
   2. **Shortcuts / automation** exporting CSV or JSON on a schedule into `data/inbox/`.
   3. **Companion sync** from the MyWellWallet iOS app via encrypted export (longer term).
 
-## Target behavior
+## Apple Health on macOS (implemented)
 
-1. User grants Health permissions once.
-2. Bridge runs on interval (see `health_sync_settings.sync_interval_hours`).
-3. Normalized rows land in SQLite with ISO8601 timestamps and `user_id`.
-4. OpenClaw queries via `sqlite-mcp` alongside FHIR MCP answers.
+OpenClaw calls these **SQLite MCP** tools (Mahesh Balan):
+
+| Tool | Purpose |
+| --- | --- |
+| `get_apple_health_sync_status` | Read `health_sync_settings` |
+| `sync_apple_health_from_phone_database` | Copy `health_*` tables from iPhone MyWellWallet SQLite export |
+| `import_apple_health_json` | Import `apple-health-bridge/inbox/*.json` |
+
+Example prompt in OpenClaw:
+
+```text
+Call get_apple_health_sync_status for my current user, then summarize health_steps
+and health_heart_rate counts from health_metrics_summary. Medical disclaimer.
+```
 
 ## Reference
 

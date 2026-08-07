@@ -1,5 +1,7 @@
 # Architecture — OpenClaw Health Assistant
 
+**Project management & Apple Health:** Mahesh Balan · **SQLite & testing:** Brandon Medina · **MCP connections:** Leonard Bryant · See [CONTRIBUTORS.md](../CONTRIBUTORS.md).
+
 ## Design principles
 
 1. **Parity with MyWellWallet** — Local persistence uses the same table layout and FHIR JSON in `fhir_bundle` / `resource_data` columns so fixtures, exports, and future mobile sync stay compatible.
@@ -9,13 +11,13 @@
 
 ## Components
 
-| Layer | Technology | Notes |
-| --- | --- | --- |
-| Agent | OpenClaw gateway + TUI/Control UI | MCP via `mcp.servers` ([docs](https://docs.openclaw.ai/tools/mcp)) |
-| LLM | Ollama `medgemma:4b` | Native URL `http://127.0.0.1:11434` (no `/v1`) |
-| Local tools | `sqlite-mcp` (FastMCP, stdio or streamable-http) | Mirrors Santanu’s retina-mcp pattern in Zero_Claw |
-| Remote FHIR | `https://mcp-fhir-server.com/mcp` | Streamable HTTP + `X-API-Key`, same as iOS `MCPClientSSE` |
-| Wearables | `apple-health-bridge` | macOS Health app / export / HealthKit helper → SQLite health_* tables |
+| Layer | Technology | Owner | Notes |
+| --- | --- | --- | --- |
+| Agent | OpenClaw gateway + TUI/Control UI | Mahesh Balan | MCP via `mcp.servers` ([docs](https://docs.openclaw.ai/tools/mcp)) |
+| LLM | Ollama `medgemma:4b` | Mahesh Balan | Native URL `http://127.0.0.1:11434` (no `/v1`) |
+| Local tools | `sqlite-mcp` (FastMCP, stdio or streamable-http) | Brandon Medina (server); Leonard Bryant (OpenClaw connect) | Mirrors Santanu’s retina-mcp pattern in Zero_Claw |
+| Remote FHIR | `https://mcp-fhir-server.com/mcp` | Leonard Bryant | Streamable HTTP + `X-API-Key`, same as iOS `MCPClientSSE` |
+| Wearables | `apple-health-bridge` | Mahesh Balan | macOS Health / export / HealthKit helper → SQLite health_* tables |
 
 ## Data flow
 

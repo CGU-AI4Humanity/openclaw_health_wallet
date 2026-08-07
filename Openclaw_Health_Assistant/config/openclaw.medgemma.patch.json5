@@ -1,0 +1,26 @@
+{
+  agents: {
+    defaults: {
+      model: "ollama/medgemma:4b",
+    },
+  },
+  models: {
+    providers: {
+      ollama: {
+        baseUrl: "http://127.0.0.1:11434",
+        apiKey: "ollama-local",
+        api: "ollama",
+        timeoutSeconds: 300,
+        models: [
+          {
+            id: "medgemma:4b",
+            name: "MedGemma 4B",
+            contextWindow: 65536,
+            maxTokens: 8192,
+            params: { keep_alive: "15m" },
+          },
+        ],
+      },
+    },
+  },
+}

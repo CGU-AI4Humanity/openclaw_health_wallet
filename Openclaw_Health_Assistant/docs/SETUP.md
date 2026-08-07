@@ -1,5 +1,7 @@
 # Setup — OpenClaw, Ollama, MedGemma, MCP
 
+**Mahesh Balan** — stack overview · **Brandon Medina** — [SQLite / db/README.md](../db/README.md) · **Leonard Bryant** — [MCP connections](./MCP_CONNECTIONS.md)
+
 Step-by-step for the OpenClaw Health Assistant track. Adjust paths if you keep the repo outside `~/openclaw_health_wallet`.
 
 ## Prerequisites
@@ -61,7 +63,9 @@ Point the default agent model at MedGemma using [config/openclaw.example.json5](
 
 OpenClaw recommends **≥64k context** for local agents; MedGemma 4B advertises a large window on Ollama — set `contextWindow` explicitly if doctor warns about context.
 
-## 4. Local SQLite database
+## 4. Local SQLite database (Brandon Medina)
+
+See [db/README.md](../db/README.md).
 
 ```bash
 cp config/.env.example config/.env
@@ -72,7 +76,9 @@ chmod +x scripts/init_db.sh
 
 Schema reference: [db/SQLITE_SCHEMA.md](../db/SQLITE_SCHEMA.md).
 
-## 5. Remote FHIR MCP (mcp-fhir-server.com)
+## 5. Remote FHIR MCP (Leonard Bryant)
+
+See [MCP_CONNECTIONS.md](./MCP_CONNECTIONS.md). Endpoint summary:
 
 Same endpoint as the MyWellWallet mobile client: base URL `https://mcp-fhir-server.com`, path `/mcp`, header `X-API-Key`.
 
@@ -90,7 +96,7 @@ If probe fails on auth, add the API key through **Settings → MCP → fhir-remo
 
 Store the key in `config/.env` as `FHIR_MCP_API_KEY` for local scripts; do not commit it.
 
-## 6. Local SQLite MCP (next implementation step)
+## 6. Local SQLite MCP (Brandon Medina — server; Leonard Bryant — OpenClaw connect)
 
 Pattern follows `Zero_Claw-Retina_Health-Assistant/retina-mcp/`:
 
@@ -103,7 +109,7 @@ openclaw mcp add mywellwallet-sqlite \
 
 Implement `sqlite-mcp/server.py` with FastMCP tools: `health_check`, `list_patients`, `get_patient_bundle`, `query_readonly_sql`, etc.
 
-## 7. Apple Health (next implementation step)
+## 7. Apple Health (Mahesh Balan)
 
 See [apple-health-bridge/README.md](../apple-health-bridge/README.md). On macOS, plan for Health app data synced from iPhone or controlled export; full HealthKit parity may require a small native helper or Shortcuts automation feeding the bridge.
 

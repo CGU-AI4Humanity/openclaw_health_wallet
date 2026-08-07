@@ -1,92 +1,298 @@
-# OpenClaw Health Assistant
+# OpenClaw Health Assistant — Setup & Usage Guide
 
-A **local-first personal health wallet** for macOS, built as CGU doctorate research alongside the MyWellWallet iOS app. OpenClaw orchestrates tools; **MedGemma** (via Ollama) provides medical-aware reasoning; data lives in **SQLite** with the same FHIR-oriented schema as MyWellWallet.
+A **local-first personal health companion** for macOS: **OpenClaw** orchestrates tools, **MedGemma** (via **Ollama**) reasons over your data, and **SQLite** holds a MyWellWallet-compatible cache of FHIR bundles and Apple Health metrics.
 
-> **Medical disclaimer:** Research prototype only. Not for clinical diagnosis or treatment decisions.
+> **Medical disclaimer:** Research prototype only—not for diagnosis or treatment decisions.
 
-## Goals
+---
 
-1. **OpenClaw + Ollama + MedGemma** — same agent stack as modern OpenClaw docs ([install](https://docs.openclaw.ai/install/), [Ollama provider](https://docs.openclaw.ai/providers/ollama)).
-2. **Local SQLite** — `users`, `fhir_patients`, `fhir_resources`, `fetch_summaries`, and Apple Health mirror tables (see [db/schema.sql](./db/schema.sql)).
-3. **Dual MCP**
-   - **Local:** stdio/streamable HTTP MCP over SQLite (CRUD + safe SQL for the agent).
-   - **Remote:** [FHIR MCP Server](https://mcp-fhir-server.com/) — same integration pattern as the iPhone app (`streamable-http`, session + API key).
-4. **Apple Health** — ingest/sync wearable and clinical data into SQLite (bridge TBD; see [apple-health-bridge/README.md](./apple-health-bridge/README.md)).
+## Contributors
 
-## Architecture (target)
+| Area | Lead |
+| --- | --- |
+| Project management, OpenClaw + MedGemma, Apple Health | **Mahesh Balan** |
+| SQLite schema, DB setup & testing, SQLite MCP server | **Brandon Medina** |
+| MCP connections (OpenClaw ↔ SQLite MCP ↔ FHIR MCP) | **Leonard Bryant** |
+
+See [CONTRIBUTORS.md](./CONTRIBUTORS.md). Repo overview (ZeroClaw vs OpenClaw): [../README.md](../README.md).
+
+---
+
+## What you are building
 
 ```mermaid
 flowchart LR
   U[User] --> OC[OpenClaw Gateway]
   OC --> MG[Ollama MedGemma]
-  OC --> LMCP[Local SQLite MCP]
+  OC --> LMCP[SQLite MCP]
   OC --> RMCP[FHIR MCP mcp-fhir-server.com]
-  LMCP --> DB[(mywellwallet-compatible.db)]
-  AH[Apple Health / export] --> BR[apple-health-bridge]
-  BR --> DB
-  RMCP --> FHIR[FHIR backend]
+  LMCP --> DB[(Local SQLite)]
+  AH[Apple Health / iPhone export] --> DB
+  RMCP --> FHIR[FHIR + document RAG]
 ```
+
+1. **Sync once:** Apple Health (via iPhone export) and FHIR (via MCP) populate **local SQLite**.
+2. **Ask anytime:** OpenClaw uses **SQLite MCP** to retrieve context, then **MedGemma** answers grounded in **your** rows—not frontier cloud models.
+3. **Identity once:** Your **name, DOB, and FHIR API key** live in **`config/.env`** (gitignored), so the agent does not keep re-prompting for authentication.
+
+---
+
+## Prerequisites
+
+| Requirement | Notes |
+| --- | --- |
+| **macOS** | Apple Silicon or Intel |
+| **Node.js 24+** | OpenClaw CLI requires it (`nvm install 24 && nvm use 24`) |
+| **Ollama** | `brew install ollama` · `brew services start ollama` |
+| **Python 3.11+** | For SQLite MCP venv |
+| **SQLite CLI** | `sqlite3` (Xcode CLT or Homebrew) |
+| **RAM** | 8 GB+ for MedGemma 4B; **64 GB** (e.g. iMac Pro) enables **`medgemma:27b`** or **Qwen ~4B** experiments |
+
+---
+
+## 1. Clone and configure secrets (local only)
+
+```bash
+git clone https://github.com/CGU-AI4Humanity/openclaw_health_wallet.git
+cd openclaw_health_wallet/Openclaw_Health_Assistant
+cp config/.env.example config/.env
+```
+
+Edit **`config/.env`** (never committed—listed in [`.gitignore`](./.gitignore)):
+
+| Variable | Purpose |
+| --- | --- |
+| `FHIR_MCP_API_KEY` | API key for [FHIR MCP Server](https://mcp-fhir-server.com/) (`X-API-Key` header) |
+| `FHIR_PATIENT_FIRST_NAME` | Your given name for FHIR patient search |
+| `FHIR_PATIENT_LAST_NAME` | Your family name for FHIR patient search |
+| `FHIR_PATIENT_DOB` | ISO date `YYYY-MM-DD` for patient matching |
+| `MYWELLWALLET_DB_PATH` | Local SQLite path (default `~/.openclaw-health-assistant/mywellwallet.db`) |
+| `APPLE_HEALTH_PHONE_DB_PATH` | Optional path to iPhone MyWellWallet export for health tables |
+| `OLLAMA_MEDGEMMA_MODEL` | Default `medgemma:4b`; change after pulling larger models |
+
+**Also gitignored:** `*.db`, `apple-health-bridge/inbox/*.json`, OpenClaw secrets under `~/.openclaw/`. Do not commit PHI or keys.
+
+OpenClaw may store MCP headers in `~/.openclaw/openclaw.json` after wiring; prefer env-backed secrets in production. Doctor may warn if a literal API key appears in config—rotate keys if a machine was shared.
+
+---
+
+## 2. Install OpenClaw
+
+```bash
+export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh"
+nvm install 24 && nvm use 24
+curl -fsSL https://openclaw.ai/install.sh | bash
+openclaw onboard --install-daemon   # or use install script only
+```
+
+Docs: [OpenClaw install](https://docs.openclaw.ai/install/) · [Ollama provider](https://docs.openclaw.ai/providers/ollama) (use native `http://127.0.0.1:11434`, **not** `/v1`).
+
+Ensure the gateway sees Ollama:
+
+```bash
+mkdir -p ~/.openclaw
+echo 'OLLAMA_API_KEY=ollama-local' >> ~/.openclaw/.env
+```
+
+---
+
+## 3. Ollama + MedGemma
+
+```bash
+brew services start ollama
+ollama pull medgemma:4b
+```
+
+**Optional (64 GB RAM):**
+
+```bash
+ollama pull medgemma:27b
+# or: ollama pull qwen3:4b
+```
+
+Set `OLLAMA_MEDGEMMA_MODEL` in `config/.env`, then:
+
+```bash
+./scripts/configure_medgemma.sh
+```
+
+This patches `~/.openclaw/openclaw.json` so the default agent model is **`ollama/medgemma:4b`** (edit [config/openclaw.medgemma.patch.json5](./config/openclaw.medgemma.patch.json5) for other model ids).
+
+---
+
+## 4. SQLite database (Brandon Medina)
+
+Empty schema:
+
+```bash
+./scripts/init_db.sh
+```
+
+Populate from iPhone MyWellWallet export (recommended for testing—**PHI**, keep local):
+
+```bash
+./scripts/copy_fixture_db.sh /path/to/mywellwallet.db
+```
+
+Validate:
+
+```bash
+./scripts/test_local_stack.sh
+```
+
+Schema: [db/schema.sql](./db/schema.sql) · [db/SQLITE_SCHEMA.md](./db/SQLITE_SCHEMA.md) · [db/README.md](./db/README.md).
+
+---
+
+## 5. SQLite MCP server
+
+```bash
+./scripts/setup_sqlite_mcp_venv.sh
+```
+
+Uses **`mcp[cli]==1.12.4`** (FastMCP). Tools include: `sqlite_health`, `list_fhir_patients`, `get_fhir_patient_bundle`, `search_fhir_resources`, `execute_read_query`, `upsert_fhir_patient`, `upsert_fhir_resource`, Apple Health tools below.
+
+---
+
+## 6. Wire MCP servers in OpenClaw (Leonard Bryant)
+
+```bash
+source config/.env   # or export vars manually
+./scripts/wire_mcp_servers.sh
+```
+
+This registers:
+
+| Server | Transport | Endpoint |
+| --- | --- | --- |
+| `mywellwallet-sqlite` | stdio | Python `sqlite-mcp/server.py` |
+| `fhir-remote` | streamable-http | `https://mcp-fhir-server.com/mcp` + `X-API-Key` |
+
+Verify:
+
+```bash
+nvm use 24
+openclaw mcp doctor mywellwallet-sqlite --probe
+openclaw mcp doctor fhir-remote --probe
+openclaw mcp status --verbose
+```
+
+Details: [docs/MCP_CONNECTIONS.md](./docs/MCP_CONNECTIONS.md).
+
+### About the FHIR MCP Server
+
+The hosted [FHIR MCP Server](https://mcp-fhir-server.com/) (Balkeum Labs R&D) provides MCP tools for **FHIR resource CRUD**, **document ingestion & semantic search (RAG)**, **LOINC** terminology, and **API-key authentication**—the same gateway used by the **MyWellWallet** iPhone app. OpenClaw calls it over **Streamable HTTP**; session and tool semantics match the mobile MCP client.
+
+---
+
+## 7. Apple Health (Mahesh Balan)
+
+Full HealthKit on macOS is limited; this project uses **safe, local** paths:
+
+### A. iPhone MyWellWallet export (recommended)
+
+Export the app database from iPhone to your Mac (see MyWellWallet `fixtures/test_database_export/README.md` in the sibling repo). Set `APPLE_HEALTH_PHONE_DB_PATH` in `config/.env`.
+
+In OpenClaw, call MCP tool **`sync_apple_health_from_phone_database`** (or use the prompt in [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md)).
+
+### B. JSON inbox
+
+Place a file in `apple-health-bridge/inbox/` (see [inbox/README.md](./apple-health-bridge/inbox/README.md)), then call **`import_apple_health_json`**.
+
+### MCP tools
+
+| Tool | Description |
+| --- | --- |
+| `get_apple_health_sync_status` | Reads `health_sync_settings` |
+| `sync_apple_health_from_phone_database` | Copies `health_*` tables from phone SQLite |
+| `import_apple_health_json` | Imports structured JSON export |
+| `health_metrics_summary` | Row counts per health table |
+
+Apple permissions and exports stay **on your machine**; nothing is committed to git.
+
+---
+
+## 8. One-command install (macOS)
+
+After `config/.env` is filled in:
+
+```bash
+./scripts/install_local_stack.sh
+```
+
+Runs venv, DB, MedGemma patch, MCP wire, and smoke tests.
+
+---
+
+## 9. First conversation — connect data sources (one at a time)
+
+Start the UI:
+
+```bash
+nvm use 24
+openclaw tui
+```
+
+Use the copy-paste prompts in **[docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md)**:
+
+1. **Apple Health** → SQLite sync  
+2. **FHIR MCP** → fetch using **first name, last name, DOB** from `config/.env` and upsert into SQLite  
+3. **Ongoing Q&A** → SQLite MCP context + MedGemma answers  
+
+---
+
+## 10. How answers use SQLite context
+
+For routine questions, OpenClaw should:
+
+1. Call **mywellwallet-sqlite** (`search_fhir_resources`, `execute_read_query` on `health_*`, etc.).
+2. Pass retrieved JSON/text as context to **MedGemma**.
+3. Optionally refresh from **fhir-remote** if the user asks for “latest from server.”
+
+You do **not** need to repeat API key or Apple login each session if `config/.env` and prior sync steps are complete.
+
+---
 
 ## Repository layout
 
 ```text
 Openclaw_Health_Assistant/
-├── README.md                 # this file
-├── docs/
-│   ├── ARCHITECTURE.md
-│   └── SETUP.md              # OpenClaw, Ollama, MCP wiring
-├── db/
-│   ├── schema.sql            # MyWellWallet-compatible DDL
-│   └── SQLITE_SCHEMA.md      # human-readable schema (from MyWellWallet)
+├── README.md                    # this guide
+├── CONTRIBUTORS.md
 ├── config/
-│   ├── .env.example
-│   └── openclaw.example.json5
-├── sqlite-mcp/               # local MCP server (implementation next)
-├── apple-health-bridge/      # HealthKit / export → SQLite (implementation next)
+│   ├── .env.example             # template — copy to .env (gitignored)
+│   ├── openclaw.example.json5
+│   └── openclaw.medgemma.patch.json5
+├── db/                          # Brandon — schema & docs
+├── sqlite-mcp/                  # Brandon — MCP server
+├── apple-health-bridge/         # Mahesh — Health sync helpers
+├── docs/
+│   ├── MCP_CONNECTIONS.md       # Leonard
+│   ├── FIRST_RUN_PROMPTS.md
+│   ├── SETUP.md
+│   └── ARCHITECTURE.md
 └── scripts/
-    └── init_db.sh
+    ├── install_local_stack.sh
+    ├── configure_medgemma.sh
+    ├── wire_mcp_servers.sh
+    └── test_local_stack.sh
 ```
 
-## Quick start (scaffold)
+---
 
-These steps prepare the environment; MCP and Apple Health code land in follow-up commits.
+## Troubleshooting
 
-```bash
-# 1. OpenClaw (see https://docs.openclaw.ai/install/)
-curl -fsSL https://openclaw.ai/install.sh | bash
-openclaw onboard --install-daemon
-
-# 2. Ollama + MedGemma (https://ollama.com/library/medgemma)
-brew install ollama   # or download from ollama.com
-ollama pull medgemma:4b
-export OLLAMA_API_KEY=ollama-local
-
-# 3. Local database
-cd Openclaw_Health_Assistant
-cp config/.env.example config/.env   # edit paths and FHIR MCP key
-./scripts/init_db.sh
-
-# 4. Wire OpenClaw (after MCP servers exist)
-# See docs/SETUP.md — openclaw mcp add ...
-openclaw doctor
-```
-
-## Configuration
-
-- Copy [config/.env.example](./config/.env.example) to `config/.env` (gitignored).
-- Use [config/openclaw.example.json5](./config/openclaw.example.json5) as a template for MedGemma + MCP entries.
-- **Never commit** `FHIR_MCP_API_KEY` or database files containing real health data.
-
-## Status
-
-| Item | Status |
+| Issue | Fix |
 | --- | --- |
-| Repo layout + schema parity with MyWellWallet | Done (scaffold) |
-| OpenClaw + MedGemma setup docs | Done (scaffold) |
-| Local SQLite MCP server | Planned |
-| Remote FHIR MCP (mcp-fhir-server.com) | Planned |
-| Apple Health bridge | Planned |
+| `openclaw`: Node version | `nvm use 24` |
+| Ollama not running | `brew services start ollama` |
+| SQLite MCP probe fails | Re-run `setup_sqlite_mcp_venv.sh`; check `MYWELLWALLET_DB_PATH` in MCP env |
+| FHIR MCP 401 | Set `FHIR_MCP_API_KEY` in `config/.env`; re-run `wire_mcp_servers.sh` |
+| Wrong patient in FHIR | Fix `FHIR_PATIENT_*` in `config/.env` |
+| Empty health tables | Run Apple Health sync prompt or `copy_fixture_db.sh` |
 
-## Author
+---
 
-**Mahesh Balan** — OpenClaw health wallet track, CGU DTech / IST 362.
+## Project lead
+
+**Mahesh Balan** — OpenClaw Health Assistant integration, CGU IST 362 / DTech coordination.
