@@ -1,0 +1,48 @@
+// Template for ~/.openclaw/openclaw.json fragments.
+// Merge carefully with your existing config; run: openclaw doctor
+{
+  agents: {
+    defaults: {
+      model: "ollama/medgemma:4b",
+    },
+  },
+  models: {
+    providers: {
+      ollama: {
+        baseUrl: "http://127.0.0.1:11434",
+        apiKey: "ollama-local",
+        api: "ollama",
+        timeoutSeconds: 300,
+        models: [
+          {
+            id: "medgemma:4b",
+            name: "MedGemma 4B",
+            contextWindow: 65536,
+            maxTokens: 8192,
+            params: { keep_alive: "15m" },
+          },
+        ],
+      },
+    },
+  },
+  mcp: {
+    servers: {
+      // Add after: openclaw mcp add fhir-remote --url https://mcp-fhir-server.com/mcp --transport streamable-http
+      // Set X-API-Key via openclaw secrets / Control UI — do not paste keys here.
+      fhir_remote: {
+        url: "https://mcp-fhir-server.com/mcp",
+        transport: "streamable-http",
+        enabled: true,
+        requestTimeoutMs: 120000,
+      },
+      // Local SQLite MCP (stdio) — enable when sqlite-mcp/server is implemented:
+      // mywellwallet_sqlite: {
+      //   command: "python3",
+      //   args: ["./sqlite-mcp/server.py"],
+      //   cwd: "/absolute/path/to/Openclaw_Health_Assistant/sqlite-mcp",
+      //   transport: "stdio",
+      //   enabled: true,
+      // },
+    },
+  },
+}
