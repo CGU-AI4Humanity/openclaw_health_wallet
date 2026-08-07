@@ -6,7 +6,7 @@
 
 1. **Parity with MyWellWallet** — Local persistence uses the same table layout and FHIR JSON in `fhir_bundle` / `resource_data` columns so fixtures, exports, and future mobile sync stay compatible.
 2. **Agent-native access** — OpenClaw never opens SQLite directly; it uses MCP tools with explicit, auditable operations (list patients, fetch bundle, run approved queries, upsert after FHIR fetch).
-3. **Hybrid data plane** — Local DB holds cached FHIR + Apple Health metrics; remote [FHIR MCP](https://mcp-fhir-server.com/) handles authoritative FHIR CRUD, LOINC lookup, and document RAG when online.
+3. **Hybrid data plane** — Local DB holds cached FHIR + Apple Health metrics; remote [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) ([API](https://mcp-fhir-server.com/)) handles authoritative FHIR CRUD, LOINC lookup, and document RAG when online.
 4. **Local medical LLM** — [MedGemma on Ollama](https://ollama.com/library/medgemma) aligns with the mobile app’s MedGemma direction while keeping inference on-device.
 
 ## Components
@@ -42,4 +42,4 @@
 
 ## Reference implementation
 
-MyWellWallet iOS (private/sibling repo): `DatabaseService`, `MCPClientSSE`, `AppleHealthService`.
+MyWellWallet iOS ([github.com/maheshbalan/myWellWallet](https://github.com/maheshbalan/myWellWallet)): `DatabaseService`, `MCPClientSSE`, `AppleHealthService`.

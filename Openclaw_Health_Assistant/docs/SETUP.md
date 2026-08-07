@@ -80,7 +80,7 @@ Schema reference: [db/SQLITE_SCHEMA.md](../db/SQLITE_SCHEMA.md).
 
 See [MCP_CONNECTIONS.md](./MCP_CONNECTIONS.md). Endpoint summary:
 
-Same endpoint as the MyWellWallet mobile client: base URL `https://mcp-fhir-server.com`, path `/mcp`, header `X-API-Key`.
+Same endpoint as [MyWellWallet](https://github.com/maheshbalan/myWellWallet) mobile client: base URL `https://mcp-fhir-server.com`, path `/mcp`, header `X-API-Key`. Server source: [github.com/maheshbalan/fhir-mcp-server](https://github.com/maheshbalan/fhir-mcp-server).
 
 CLI (headers for API key may require Control UI or config secrets — use whichever `openclaw doctor` accepts on your version):
 

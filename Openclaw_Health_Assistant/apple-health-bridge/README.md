@@ -33,7 +33,7 @@ and health_heart_rate counts from health_metrics_summary. Medical disclaimer.
 
 ## Reference
 
-MyWellWallet iOS: `lib/services/apple_health_service.dart`, `docs/APPLE_HEALTH_SETUP.md` (sibling repo).
+MyWellWallet iOS: [github.com/maheshbalan/myWellWallet](https://github.com/maheshbalan/myWellWallet) — `lib/services/apple_health_service.dart`, `docs/APPLE_HEALTH_SETUP.md`.
 
 ## Files to add
 

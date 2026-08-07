@@ -62,7 +62,7 @@ Edit **`config/.env`** (never committed—listed in [`.gitignore`](./.gitignore)
 
 | Variable | Purpose |
 | --- | --- |
-| `FHIR_MCP_API_KEY` | API key for [FHIR MCP Server](https://mcp-fhir-server.com/) (`X-API-Key` header) |
+| `FHIR_MCP_API_KEY` | API key for the [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) hosted at [mcp-fhir-server.com](https://mcp-fhir-server.com/) (`X-API-Key` header) |
 | `FHIR_PATIENT_FIRST_NAME` | Your given name for FHIR patient search |
 | `FHIR_PATIENT_LAST_NAME` | Your family name for FHIR patient search |
 | `FHIR_PATIENT_DOB` | ISO date `YYYY-MM-DD` for patient matching |
@@ -181,7 +181,7 @@ Details: [docs/MCP_CONNECTIONS.md](./docs/MCP_CONNECTIONS.md).
 
 ### About the FHIR MCP Server
 
-The hosted [FHIR MCP Server](https://mcp-fhir-server.com/) (Balkeum Labs R&D) provides MCP tools for **FHIR resource CRUD**, **document ingestion & semantic search (RAG)**, **LOINC** terminology, and **API-key authentication**—the same gateway used by the **MyWellWallet** iPhone app. OpenClaw calls it over **Streamable HTTP**; session and tool semantics match the mobile MCP client.
+The **[FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server)** provides MCP tools for **FHIR resource CRUD**, **document ingestion & semantic search (RAG)**, **LOINC** terminology, and **API-key authentication** on the hosted service **[mcp-fhir-server.com](https://mcp-fhir-server.com/)**—the same gateway used by the **[MyWellWallet](https://github.com/maheshbalan/myWellWallet)** iPhone app. OpenClaw calls it over **Streamable HTTP**; session and tool semantics match the mobile MCP client.
 
 ---
 
@@ -191,7 +191,7 @@ Full HealthKit on macOS is limited; this project uses **safe, local** paths:
 
 ### A. iPhone MyWellWallet export (recommended)
 
-Export the app database from iPhone to your Mac (see MyWellWallet `fixtures/test_database_export/README.md` in the sibling repo). Set `APPLE_HEALTH_PHONE_DB_PATH` in `config/.env`.
+Export the app database from iPhone to your Mac (see [MyWellWallet](https://github.com/maheshbalan/myWellWallet) `fixtures/test_database_export/README.md`). Set `APPLE_HEALTH_PHONE_DB_PATH` in `config/.env`.
 
 In OpenClaw, call MCP tool **`sync_apple_health_from_phone_database`** (or use the prompt in [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md)).
 

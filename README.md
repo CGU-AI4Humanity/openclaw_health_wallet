@@ -9,7 +9,7 @@ We showcase **two complementary implementations** in one monorepo:
 | Track | Agent stack | Primary use case |
 | --- | --- | --- |
 | **ZeroClaw — Retinal Health Assistant** (Santanu Ray) | ZeroClaw + Ollama (Qwen) + custom Retina MCP | **Fundus / retinal image analysis** (RETFound retinal age, heart-risk screening) |
-| **OpenClaw — Health Assistant** (Mahesh Balan, Brandon Medina, Leonard Bryant) | OpenClaw + Ollama (MedGemma) + SQLite MCP + [FHIR MCP Server](https://mcp-fhir-server.com/) | **General health Q&A** over **your** EHR cache, labs, and **Apple Health** metrics |
+| **OpenClaw — Health Assistant** (Mahesh Balan, Brandon Medina, Leonard Bryant) | OpenClaw + Ollama (MedGemma) + SQLite MCP + [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) | **General health Q&A** over **your** EHR cache, labs, and **Apple Health** metrics |
 
 Both tracks share the same design idea: **local LLM for reasoning**, **MCP for tools**, **no requirement for GPT/Claude/etc. in the loop**.
 
@@ -24,7 +24,7 @@ Modern health apps often depend on proprietary cloud AI. Here we show that:
 3. **MCP servers** bridge the agent to **FHIR EHR data**, **local SQLite caches**, and **specialized models** (retinal CNNs via FastAPI).
 4. **Context for answers** comes from **your data** (SQLite + synced FHIR + Apple Health tables), not from the model’s parametric memory.
 
-The OpenClaw track aligns with the **MyWellWallet** iOS app and the **FHIR MCP Server** gateway ([mcp-fhir-server.com](https://mcp-fhir-server.com/)) used in production R&D at Balkeum Labs.
+The OpenClaw track aligns with the **[MyWellWallet](https://github.com/maheshbalan/myWellWallet)** iOS app and the **[FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server)** gateway (hosted API: [mcp-fhir-server.com](https://mcp-fhir-server.com/)).
 
 > **Medical disclaimer:** All projects here are **research prototypes**. They do not diagnose, treat, or replace care from licensed professionals.
 
@@ -62,7 +62,7 @@ flowchart TD
 
 - **Local SQLite** — same FHIR JSON schema as MyWellWallet (`fhir_patients`, `fhir_resources`, `health_*` tables).
 - **SQLite MCP** — agent reads/writes the cache via audited tools (Brandon Medina).
-- **FHIR MCP** — live fetch from [mcp-fhir-server.com](https://mcp-fhir-server.com/) (Leonard Bryant).
+- **FHIR MCP** — live fetch from the hosted gateway at [mcp-fhir-server.com](https://mcp-fhir-server.com/) ([source](https://github.com/maheshbalan/fhir-mcp-server)) (Leonard Bryant).
 - **Apple Health bridge** — sync from iPhone export or JSON inbox into SQLite (Mahesh Balan).
 
 ```mermaid
@@ -84,7 +84,7 @@ flowchart LR
 
 ## FHIR MCP Server (shared backend)
 
-The hosted **FHIR MCP Server** ([mcp-fhir-server.com](https://mcp-fhir-server.com/)) exposes MCP tools for FHIR CRUD, document RAG (Pinecone), LOINC lookup, and API-key–authenticated access— the same gateway the MyWellWallet iPhone app uses. OpenClaw connects over **Streamable HTTP** with an **`X-API-Key`** header stored only in **local** `config/.env` (gitignored).
+The **[FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server)** exposes MCP tools for FHIR CRUD, document RAG (Pinecone), LOINC lookup, and API-key–authenticated access at **[mcp-fhir-server.com](https://mcp-fhir-server.com/)**—the same gateway the [MyWellWallet](https://github.com/maheshbalan/myWellWallet) iPhone app uses. OpenClaw connects over **Streamable HTTP** with an **`X-API-Key`** header stored only in **local** `config/.env` (gitignored).
 
 Patient identity for FHIR lookup (**first name, last name, date of birth**) is also stored in that local config so the agent does not repeatedly ask for credentials; see the OpenClaw guide.
 
@@ -119,8 +119,8 @@ Follow [Openclaw_Health_Assistant/README.md](./Openclaw_Health_Assistant/README.
 
 ## Related work
 
-- [MyWellWallet](https://mcp-fhir-server.com/) — mobile personal health wallet (FHIR + local SQLite + MCP)
-- [FHIR MCP Server](https://mcp-fhir-server.com/) — healthcare AI gateway (MCP tools, RAG, LOINC)
+- [MyWellWallet](https://github.com/maheshbalan/myWellWallet) — mobile personal health wallet (FHIR + local SQLite + MCP)
+- [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) — healthcare AI gateway (MCP tools, RAG, LOINC); hosted at [mcp-fhir-server.com](https://mcp-fhir-server.com/)
 
 ---
 

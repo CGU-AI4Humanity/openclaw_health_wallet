@@ -28,6 +28,7 @@
   mcp: {
     servers: {
       // Add after: openclaw mcp add fhir-remote --url https://mcp-fhir-server.com/mcp --transport streamable-http
+      // FHIR MCP Server: https://github.com/maheshbalan/fhir-mcp-server
       // Set X-API-Key via openclaw secrets / Control UI — do not paste keys here.
       fhir_remote: {
         url: "https://mcp-fhir-server.com/mcp",

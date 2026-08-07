@@ -35,7 +35,7 @@ MCP_TRANSPORT=streamable-http MYWELLWALLET_DB_PATH="${DB_PATH}" .venv/bin/python
 
 ## Remote FHIR MCP (streamable-http)
 
-Same endpoint as MyWellWallet iOS: `https://mcp-fhir-server.com/mcp`, header `X-API-Key`.
+Same endpoint as [MyWellWallet](https://github.com/maheshbalan/myWellWallet) iOS: `https://mcp-fhir-server.com/mcp`, header `X-API-Key`. Project: [github.com/maheshbalan/fhir-mcp-server](https://github.com/maheshbalan/fhir-mcp-server).
 
 ```bash
 openclaw mcp add fhir-remote \
