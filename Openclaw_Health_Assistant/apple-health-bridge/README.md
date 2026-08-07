@@ -14,9 +14,11 @@ Ingest Apple Health data into the same tables as MyWellWallet iOS (`health_gluco
   2. **Shortcuts / automation** exporting CSV or JSON on a schedule into `data/inbox/`.
   3. **Companion sync** from the MyWellWallet iOS app via encrypted export (longer term).
 
-## Apple Health on macOS (implemented)
+## Apple Health on macOS
 
-OpenClaw calls these **SQLite MCP** tools (Mahesh Balan):
+**Primary (target):** QR pairing via `./scripts/apple_health_pairing.sh` → MyWellWallet on iPhone → **API** → SQLite. See [README Step 5](../README.md#step-5-connect-apple-health-qr--api).
+
+**Interim (testing):** iPhone SQLite export or JSON inbox — MCP tools below.
 
 | Tool | Purpose |
 | --- | --- |

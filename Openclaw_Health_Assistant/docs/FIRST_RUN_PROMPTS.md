@@ -1,75 +1,74 @@
 # First-run OpenClaw prompts
 
-After `./scripts/install_local_stack.sh` and `openclaw tui`, run these **once** (one at a time) so local SQLite is populated. Replace placeholders with values from your gitignored `config/.env`.
+Use **after** [README.md](../README.md) Steps 1–9. Start with `nvm use 24 && openclaw tui`.
 
-> Include a **medical disclaimer** in every health-facing reply. This is research software, not clinical care.
+Replace `FHIR_PATIENT_*` placeholders with values from your gitignored **`config/.env`** (never paste keys into Git).
 
----
-
-## Step 1 — Apple Health → SQLite
-
-Paste into OpenClaw (adjust path if needed):
-
-```text
-Using mywellwallet-sqlite only:
-
-1. Call get_current_user to obtain user_id.
-2. Call sync_apple_health_from_phone_database with source_sqlite_path set to
-   the path in my APPLE_HEALTH_PHONE_DB_PATH (or my latest iPhone MyWellWallet export).
-3. Call get_apple_health_sync_status for that user_id.
-4. Summarize what was synced (counts for health_steps, health_heart_rate,
-   health_glucose, health_blood_pressure, health_lab_results).
-
-Do not call fhir-remote yet. End with a medical disclaimer.
-```
-
-**Alternative:** drop a JSON file in `apple-health-bridge/inbox/` and ask the agent to call `import_apple_health_json` with that path.
+> Medical disclaimer required on every health answer.
 
 ---
 
-## Step 2 — FHIR MCP → refresh EHR cache
+## Prompt A — Apple Health (Step 10)
 
-Use the **name and DOB from config/.env** (FHIR_PATIENT_FIRST_NAME, FHIR_PATIENT_LAST_NAME, FHIR_PATIENT_DOB):
-
-```text
-Using fhir-remote MCP tools:
-
-1. Find my patient record using first name "<FHIR_PATIENT_FIRST_NAME>",
-   last name "<FHIR_PATIENT_LAST_NAME>", birth date "<FHIR_PATIENT_DOB>".
-2. Fetch recent relevant FHIR resources (Patient, Condition, Observation, MedicationRequest,
-   Immunization, Encounter — as available).
-3. Using mywellwallet-sqlite, upsert the patient bundle and individual fhir_resources
-   so my local cache is current.
-4. Confirm with sqlite_health and list_fhir_patients.
-
-End with a medical disclaimer.
-```
-
-You should **not** need to re-enter API keys or Apple Health passwords in chat—those live in local config and OS permissions.
-
----
-
-## Step 3 — Ongoing questions (SQLite-grounded answers)
+After QR/API pairing **or** interim phone export:
 
 ```text
-For my health question below:
-1. Use mywellwallet-sqlite to load context (list_fhir_patients, search_fhir_resources,
-   execute_read_query on health_* tables as needed).
-2. Answer using only that retrieved context plus general medical education.
-3. If local data is stale, say so and offer to refresh from fhir-remote.
+Use only mywellwallet-sqlite tools.
 
-Question: <your question here>
+1. get_current_user → user_id
+2. get_apple_health_sync_status for that user_id
+3. If health tables are empty, sync_apple_health_from_phone_database using
+   APPLE_HEALTH_PHONE_DB_PATH from my setup (or confirm QR/API sync completed).
+4. health_metrics_summary for user_id
+5. Summarize steps, heart rate, glucose, BP, labs availability.
 
 Medical disclaimer required.
 ```
 
 ---
 
-## Optional — larger local models (64 GB RAM e.g. iMac Pro)
+## Prompt B — FHIR MCP → SQLite (Step 10)
+
+API key is already in OpenClaw MCP config from `wire_mcp_servers.sh` — **do not** type the key in chat.
+
+```text
+Use fhir-remote, then mywellwallet-sqlite.
+
+Patient identity (from my local config, do not ask again):
+  First: <FHIR_PATIENT_FIRST_NAME>
+  Last: <FHIR_PATIENT_LAST_NAME>
+  DOB: <FHIR_PATIENT_DOB>
+
+1. Find and fetch my FHIR resources (Patient, Condition, Observation,
+   MedicationRequest, Immunization, Encounter).
+2. upsert_fhir_patient / upsert_fhir_resource into local SQLite.
+3. sqlite_health and list_fhir_patients to confirm.
+
+Medical disclaimer required.
+```
+
+---
+
+## Prompt C — Grounded Q&A (Step 11)
+
+```text
+You MUST call mywellwallet-sqlite before answering.
+
+1. Retrieve relevant fhir_resources and health_* rows for my question.
+2. Answer using only that data plus general education.
+3. Offer fhir-remote refresh only if data looks missing or I ask for "latest from server".
+
+Question: <your question>
+
+Medical disclaimer required.
+```
+
+---
+
+## Larger models (64 GB RAM)
 
 ```bash
 ollama pull medgemma:27b
-# or: ollama pull qwen3:4b
+# Update OLLAMA_MEDGEMMA_MODEL in config/.env
+./scripts/configure_medgemma.sh
 ```
-
-Update `OLLAMA_MEDGEMMA_MODEL` in `config/.env` and re-run `./scripts/configure_medgemma.sh`, editing `config/openclaw.medgemma.patch.json5` if you change model id or context window.
