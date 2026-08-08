@@ -28,7 +28,7 @@ def write_env(path: Path, values: dict[str, str]) -> None:
         "",
     ]
     order = [
-        "MYWELLWALLET_DB_PATH",
+        "OPENCLAW_HEALTH_DB_PATH",
         "FHIR_MCP_BASE_URL",
         "FHIR_MCP_API_KEY",
         "FHIR_PATIENT_FIRST_NAME",

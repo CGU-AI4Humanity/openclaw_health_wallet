@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full local stack: MedGemma → SQLite → MCP → FHIR → Apple Health smoke
+# Full local stack: MedGemma → SQLite → MCP → FHIR → smoke test
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,24 +12,19 @@ nvm use 24 >/dev/null 2>&1 || true
 
 if [[ ! -f "${ENV_FILE}" ]]; then
   cp "${ROOT}/config/.env.example" "${ENV_FILE}"
-  if [[ -f "${HOME}/myWellWallet/lib/config/app_config.dart" ]]; then
-    KEY="$(grep "mcpApiKey" "${HOME}/myWellWallet/lib/config/app_config.dart" | sed -n "s/.*'\([^']*\)'.*/\1/p" | head -1)"
-    if [[ -n "${KEY}" ]]; then
-      echo "FHIR_MCP_API_KEY=${KEY}" >> "${ENV_FILE}"
-    fi
-  fi
 fi
 
 chmod +x "${ROOT}/scripts/"*.sh
 "${ROOT}/scripts/setup_sqlite_mcp_venv.sh"
 
-DB="${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/mywellwallet.db}"
-if [[ ! -f "${DB}" ]] || [[ "$(sqlite3 "${DB}" "SELECT COUNT(*) FROM fhir_patients;" 2>/dev/null || echo 0)" == "0" ]]; then
-  if [[ -f "${HOME}/myWellWallet/fixtures/test_database_export/mywellwallet_phone.sqlite3" ]]; then
-    "${ROOT}/scripts/copy_fixture_db.sh"
-  else
-    "${ROOT}/scripts/init_db.sh"
-  fi
+# shellcheck disable=SC1090
+source "${ENV_FILE}"
+DB="${OPENCLAW_HEALTH_DB_PATH:-${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/openclaw_health.db}}"
+
+if [[ ! -f "${DB}" ]]; then
+  "${ROOT}/scripts/init_db.sh"
+elif [[ "${COPY_FIXTURE:-}" != "" ]]; then
+  "${ROOT}/scripts/copy_fixture_db.sh" "${COPY_FIXTURE}"
 fi
 
 "${ROOT}/scripts/configure_medgemma.sh"
@@ -38,4 +33,4 @@ fi
 
 echo ""
 echo "Stack ready. Chat: openclaw tui  (or Control UI)"
-echo "Apple Health MCP: sync_apple_health_from_phone_database | import_apple_health_json"
+echo "Apple Health: complete Setup Wizard QR pairing (Health Link iOS) or MCP import_apple_health_json for file-based import."

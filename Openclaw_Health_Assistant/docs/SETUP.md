@@ -69,7 +69,7 @@ See [db/README.md](../db/README.md).
 
 ```bash
 cp config/.env.example config/.env
-# Edit FHIR_MCP_API_KEY and MYWELLWALLET_DB_PATH if needed
+# Edit FHIR_MCP_API_KEY and OPENCLAW_HEALTH_DB_PATH if needed
 chmod +x scripts/init_db.sh
 ./scripts/init_db.sh
 ```
@@ -101,7 +101,7 @@ Store the key in `config/.env` as `FHIR_MCP_API_KEY` for local scripts; do not c
 Pattern follows `Zero_Claw-Retina_Health-Assistant/retina-mcp/`:
 
 ```bash
-openclaw mcp add mywellwallet-sqlite \
+openclaw mcp add openclaw-health-sqlite \
   --command python3 \
   --arg server.py \
   --cwd "$(pwd)/sqlite-mcp"
@@ -118,7 +118,7 @@ See [apple-health-bridge/README.md](../apple-health-bridge/README.md). On macOS,
 ```bash
 openclaw mcp status --verbose
 openclaw mcp doctor fhir-remote --probe
-# openclaw mcp doctor mywellwallet-sqlite --probe
+# openclaw mcp doctor openclaw-health-sqlite --probe
 ```
 
 Chat example (Control UI or CLI):

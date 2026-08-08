@@ -36,8 +36,8 @@
         enabled: true,
         requestTimeoutMs: 120000,
       },
-      // Local SQLite MCP (stdio) — enable when sqlite-mcp/server is implemented:
-      // mywellwallet_sqlite: {
+      // Local SQLite MCP (stdio) — use scripts/wire_mcp_servers.sh:
+      // openclaw_health_sqlite: {
       //   command: "python3",
       //   args: ["./sqlite-mcp/server.py"],
       //   cwd: "/absolute/path/to/Openclaw_Health_Assistant/sqlite-mcp",

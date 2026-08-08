@@ -1,6 +1,6 @@
 # Apple Health bridge
 
-**Lead:** Mahesh Balan — Apple Health integration and sync into MyWellWallet-compatible SQLite `health_*` tables.
+**Lead:** Mahesh Balan — Apple Health integration and sync into local SQLite `health_*` tables.
 
 SQLite schema and MCP access: **Brandon Medina**. OpenClaw MCP registration: **Leonard Bryant**.
 
@@ -25,15 +25,12 @@ See [README Step 5](../README.md#step-5-connect-apple-health-qr--local-api) and 
 | Tool | Purpose |
 | --- | --- |
 | `get_apple_health_sync_status` | Read `health_sync_settings` |
-| `import_apple_health_json` | Import structured JSON from `inbox/` |
-| `sync_apple_health_from_phone_database` | Legacy bulk copy from an exported SQLite file (engineering use) |
+| `import_apple_health_json` | Optional import from `inbox/*.json` (engineering / recovery) |
+
+Pairing API ingestion does not require MCP; the pairing server writes SQLite directly.
 
 ## macOS HealthKit (future)
 
 Where entitlements allow, a native Mac helper may read the **Health** app database directly when iPhone data is already synced—same SQLite schema, no phone POST.
-
-## Reference
-
-Related mobile research: [MyWellWallet](https://github.com/maheshbalan/myWellWallet).
 
 **Lead:** Mahesh Balan.

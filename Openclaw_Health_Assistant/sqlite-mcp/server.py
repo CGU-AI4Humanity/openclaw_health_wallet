@@ -1,4 +1,4 @@
-"""MyWellWallet-compatible SQLite MCP server for OpenClaw."""
+"""Local SQLite MCP server for OpenClaw Health Assistant."""
 
 import json
 import os
@@ -17,7 +17,7 @@ if str(_BRIDGE) not in sys.path:
 import db
 
 mcp = FastMCP(
-    name="MyWellWallet SQLite",
+    name="OpenClaw Health SQLite",
     stateless_http=os.getenv("MCP_TRANSPORT") == "streamable-http",
     json_response=True,
     host=os.getenv("MCP_HOST", "127.0.0.1"),
@@ -340,24 +340,6 @@ def get_apple_health_sync_status(user_id: str) -> dict[str, Any]:
     if row is None:
         return {"status": "success", "connected": False, "settings": None}
     return {"status": "success", "connected": True, "settings": dict(row)}
-
-
-@mcp.tool()
-def sync_apple_health_from_phone_database(
-    source_sqlite_path: str,
-    user_id: Optional[str] = None,
-) -> dict[str, Any]:
-    """
-    Copy Apple Health mirror tables from a MyWellWallet iPhone SQLite export
-    into the local assistant database. Default source: ~/myWellWallet/fixtures/...
-    """
-    from health_sync import sync_health_tables_from_phone_db
-
-    path = source_sqlite_path.strip() or os.path.expanduser(
-        "~/myWellWallet/fixtures/test_database_export/mywellwallet_phone.sqlite3"
-    )
-    with db.connect() as conn:
-        return sync_health_tables_from_phone_db(conn, path, user_id)
 
 
 @mcp.tool()

@@ -14,7 +14,7 @@ nvm use 24 >/dev/null 2>&1 || true
 source "${ENV_FILE}"
 
 PY="${ROOT}/sqlite-mcp/.venv/bin/python"
-DB_PATH="${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/mywellwallet.db}"
+DB_PATH="${OPENCLAW_HEALTH_DB_PATH:-${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/openclaw_health.db}}"
 
 add_or_replace() {
   local name="$1"
@@ -23,13 +23,15 @@ add_or_replace() {
   openclaw mcp add "${name}" "$@"
 }
 
-add_or_replace mywellwallet-sqlite \
+add_or_replace openclaw-health-sqlite \
   --command "${PY}" \
   --arg server.py \
   --cwd "${ROOT}/sqlite-mcp" \
-  --env "MYWELLWALLET_DB_PATH=${DB_PATH}"
+  --env "OPENCLAW_HEALTH_DB_PATH=${DB_PATH}"
 
-openclaw mcp doctor mywellwallet-sqlite --probe
+openclaw mcp remove mywellwallet-sqlite 2>/dev/null || true
+
+openclaw mcp doctor openclaw-health-sqlite --probe
 
 if [[ -n "${FHIR_MCP_API_KEY:-}" ]]; then
   add_or_replace fhir-remote \

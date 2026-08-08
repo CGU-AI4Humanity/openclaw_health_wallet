@@ -135,7 +135,7 @@ chmod 600 config/.env
 | `FHIR_PATIENT_FIRST_NAME` | Your legal first name | Patient search on FHIR server |
 | `FHIR_PATIENT_LAST_NAME` | Your legal last name | Patient search |
 | `FHIR_PATIENT_DOB` | `YYYY-MM-DD` | Patient search |
-| `MYWELLWALLET_DB_PATH` | Usually default | Local SQLite file |
+| `OPENCLAW_HEALTH_DB_PATH` | Usually default | Local SQLite file |
 | `FHIR_MCP_BASE_URL` | Usually `https://mcp-fhir-server.com` | API host |
 | `APPLE_HEALTH_API_BASE_URL` | After QR pairing | Mac local sync API |
 | `APPLE_HEALTH_DEVICE_TOKEN` | After QR pairing | Pairing secret (local `.env` only) |
@@ -197,24 +197,24 @@ Apple Health is authorized on **iPhone**; metrics are sent to a **small HTTP API
 
 Optional **Mac HealthKit** direct ingestion may be added later for hosts that already sync Health data from iPhone.
 
-Legacy SQLite MCP tools (`sync_apple_health_from_phone_database`, JSON inbox) remain available for engineering and data recovery; they are not part of the standard operator workflow.
+Optional MCP tool **`import_apple_health_json`** supports file-based import from `apple-health-bridge/inbox/` for engineering use only—not the standard Apple Health path.
 
 ---
 
 ## Step 6 — Local SQLite database
 
-Creates an empty MyWellWallet-compatible schema (Brandon Medina):
+Creates the local FHIR + Apple Health SQLite schema (Brandon Medina):
 
 ```bash
 ./scripts/init_db.sh
 ```
 
-Default file: `~/.openclaw-health-assistant/mywellwallet.db` (override with `MYWELLWALLET_DB_PATH` in `config/.env`).
+Default file: `~/.openclaw-health-assistant/openclaw_health.db` (override with `OPENCLAW_HEALTH_DB_PATH` in `config/.env`).
 
-Optional: copy a populated test export (PHI—local only):
+Optional: copy a populated test database for local QA (PHI—local only):
 
 ```bash
-./scripts/copy_fixture_db.sh /path/to/mywellwallet.db
+./scripts/copy_fixture_db.sh /path/to/test.sqlite3
 ```
 
 Schema docs: [db/schema.sql](./db/schema.sql) · [db/SQLITE_SCHEMA.md](./db/SQLITE_SCHEMA.md).
@@ -223,7 +223,7 @@ Schema docs: [db/schema.sql](./db/schema.sql) · [db/SQLITE_SCHEMA.md](./db/SQLI
 
 ## Step 7 — SQLite MCP server
 
-This is a **local Python MCP server** (stdio) that exposes SQLite to OpenClaw—**no API key**; it reads `MYWELLWALLET_DB_PATH`.
+This is a **local Python MCP server** (stdio) that exposes SQLite to OpenClaw—**no API key**; it reads `OPENCLAW_HEALTH_DB_PATH`.
 
 ```bash
 ./scripts/setup_sqlite_mcp_venv.sh
@@ -238,8 +238,8 @@ Main tools (Brandon Medina):
 | `search_fhir_resources` | Conditions, Observations, etc. |
 | `execute_read_query` | Read-only SQL on `health_*` / FHIR tables |
 | `upsert_fhir_patient` / `upsert_fhir_resource` | After FHIR MCP fetch |
-| `sync_apple_health_from_phone_database` | Legacy import from exported SQLite (engineering use) |
 | `get_apple_health_sync_status` | Pairing/sync metadata |
+| `import_apple_health_json` | Optional file-based Apple Health import |
 
 Requires **`mcp[cli]==1.12.4`** (installed by the script).
 
@@ -260,13 +260,13 @@ set -a && source config/.env && set +a
 
 | OpenClaw name | Type | How it runs |
 | --- | --- | --- |
-| **`mywellwallet-sqlite`** | stdio | `sqlite-mcp/.venv/bin/python server.py` with env `MYWELLWALLET_DB_PATH=...` |
+| **`openclaw-health-sqlite`** | stdio | `sqlite-mcp/.venv/bin/python server.py` with env `OPENCLAW_HEALTH_DB_PATH=...` |
 | **`fhir-remote`** | streamable-http | URL `{FHIR_MCP_BASE_URL}/mcp` + header `X-API-Key: {FHIR_MCP_API_KEY}` |
 
 ### Verify connections
 
 ```bash
-openclaw mcp doctor mywellwallet-sqlite --probe
+openclaw mcp doctor openclaw-health-sqlite --probe
 openclaw mcp doctor fhir-remote --probe
 openclaw mcp status --verbose
 ```
@@ -315,13 +315,13 @@ Run **one prompt at a time** (copy from below; replace names/DOB with your `conf
 ### Prompt A — Apple Health (after QR/API or optional file import)
 
 ```text
-Use only mywellwallet-sqlite tools.
+Use only openclaw-health-sqlite tools.
 
 1. get_current_user → user_id
-2. If APPLE_HEALTH is linked via API, confirm with get_apple_health_sync_status.
-   If not, call sync_apple_health_from_phone_database using my configured export path.
-3. health_metrics_summary for that user_id
-4. Summarize available steps, heart rate, glucose, BP, and lab row counts.
+2. get_apple_health_sync_status for that user_id
+3. If health_* tables are empty, tell me to complete Step 5 (Health Link QR pairing on Mac).
+4. health_metrics_summary for that user_id
+5. Summarize available steps, heart rate, glucose, BP, and lab row counts.
 
 Medical disclaimer required.
 ```
@@ -331,7 +331,7 @@ Medical disclaimer required.
 Uses **first name, last name, DOB from config/.env** (not from chat memory):
 
 ```text
-Use fhir-remote MCP tools, then mywellwallet-sqlite to persist locally.
+Use fhir-remote MCP tools, then openclaw-health-sqlite to persist locally.
 
 1. Find patient: first name "<FHIR_PATIENT_FIRST_NAME>", last name "<FHIR_PATIENT_LAST_NAME>",
    birth date "<FHIR_PATIENT_DOB>".
@@ -352,7 +352,7 @@ More prompts: [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md).
 After Steps 10A/B, **routine questions should hit SQLite first**, then MedGemma explains. Paste this **before** your question:
 
 ```text
-You must use mywellwallet-sqlite before answering.
+You must use openclaw-health-sqlite before answering.
 
 1. list_fhir_patients (if needed identify my patient_id)
 2. search_fhir_resources and/or execute_read_query on health_* tables for data relevant to my question
@@ -387,11 +387,11 @@ Runs Steps 6–9 automation (venv, DB, MedGemma patch, MCP wire, smoke test). Yo
 | Symptom | Fix |
 | --- | --- |
 | `openclaw` Node error | `nvm use 24` |
-| SQLite MCP probe fails | `./scripts/setup_sqlite_mcp_venv.sh`; check `MYWELLWALLET_DB_PATH` |
+| SQLite MCP probe fails | `./scripts/setup_sqlite_mcp_venv.sh`; check `OPENCLAW_HEALTH_DB_PATH` |
 | FHIR MCP 401 | Valid `FHIR_MCP_API_KEY`; re-run `wire_mcp_servers.sh` |
 | Wrong patient | Fix `FHIR_PATIENT_*` in `config/.env` |
-| Empty `health_*` tables | Complete Step 5 (QR/API pairing or optional import path) |
-| Model ignores tools | Confirm `openclaw mcp status`; use explicit “must use mywellwallet-sqlite” prompts |
+| Empty `health_*` tables | Complete Step 5 (Health Link QR pairing on Mac) |
+| Model ignores tools | Confirm `openclaw mcp status`; use explicit “must use openclaw-health-sqlite” prompts |
 | Raw JSON tool output | Ollama `baseUrl` must not use `/v1`; re-run `configure_medgemma.sh` |
 
 ---

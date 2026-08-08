@@ -1,4 +1,4 @@
-"""Apple Health → MyWellWallet SQLite sync (Mahesh Balan — macOS / export path)."""
+"""Apple Health → local SQLite (Health Link pairing API and optional JSON import)."""
 
 from __future__ import annotations
 
@@ -9,82 +9,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-HEALTH_TABLES = (
-    "health_glucose",
-    "health_heart_rate",
-    "health_steps",
-    "health_blood_pressure",
-    "health_lab_results",
-    "health_sync_settings",
-)
-
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-
-
-def sync_health_tables_from_phone_db(
-    dest_conn: sqlite3.Connection,
-    source_path: str | Path,
-    user_id: str | None = None,
-) -> dict[str, Any]:
-    """Copy health_* rows from an iPhone MyWellWallet export into the local DB."""
-    source = Path(source_path).expanduser().resolve()
-    if not source.is_file():
-        return {"status": "error", "message": f"Source not found: {source}"}
-
-    copied: dict[str, int] = {}
-    with sqlite3.connect(str(source)) as src:
-        src.row_factory = sqlite3.Row
-        src_tables = {
-            r[0]
-            for r in src.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            ).fetchall()
-        }
-        if user_id is None:
-            row = src.execute(
-                "SELECT id FROM users ORDER BY created_at DESC LIMIT 1"
-            ).fetchone()
-            if row is None:
-                return {
-                    "status": "error",
-                    "message": "No users in source DB; pass user_id explicitly.",
-                }
-            user_id = row[0]
-
-        for table in HEALTH_TABLES:
-            if table not in src_tables:
-                copied[table] = 0
-                continue
-            rows = src.execute(f"SELECT * FROM {table}").fetchall()
-            if not rows:
-                copied[table] = 0
-                continue
-            if table != "health_sync_settings":
-                dest_conn.execute(
-                    f"DELETE FROM {table} WHERE user_id = ?", (user_id,)
-                )
-            cols = rows[0].keys()
-            placeholders = ", ".join("?" for _ in cols)
-            col_list = ", ".join(cols)
-            for row in rows:
-                data = dict(row)
-                if table != "health_sync_settings" and "user_id" in data:
-                    data["user_id"] = user_id
-                dest_conn.execute(
-                    f"INSERT OR REPLACE INTO {table} ({col_list}) VALUES ({placeholders})",
-                    tuple(data[c] for c in cols),
-                )
-            copied[table] = len(rows)
-
-    dest_conn.commit()
-    return {
-        "status": "success",
-        "user_id": user_id,
-        "source": str(source),
-        "rows_copied": copied,
-    }
 
 
 def import_health_json_export(

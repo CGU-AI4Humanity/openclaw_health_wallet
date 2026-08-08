@@ -146,7 +146,9 @@ class WizardApp(tk.Tk):
                     "FHIR_PATIENT_FIRST_NAME": self.fhir_fn.get().strip(),
                     "FHIR_PATIENT_LAST_NAME": self.fhir_ln.get().strip(),
                     "FHIR_PATIENT_DOB": self.fhir_dob.get().strip(),
-                    "MYWELLWALLET_DB_PATH": str(Path.home() / ".openclaw-health-assistant" / "mywellwallet.db"),
+                    "OPENCLAW_HEALTH_DB_PATH": str(
+                        Path.home() / ".openclaw-health-assistant" / "openclaw_health.db"
+                    ),
                 },
             )
             state.mark_done("fhir_config")
@@ -193,7 +195,15 @@ class WizardApp(tk.Tk):
                 return
 
             env = load_env(ENV_PATH)
-            db = Path(env.get("MYWELLWALLET_DB_PATH", Path.home() / ".openclaw-health-assistant" / "mywellwallet.db"))
+            db = Path(
+                env.get(
+                    "OPENCLAW_HEALTH_DB_PATH",
+                    env.get(
+                        "MYWELLWALLET_DB_PATH",
+                        str(Path.home() / ".openclaw-health-assistant" / "openclaw_health.db"),
+                    ),
+                )
+            )
 
             import sqlite3
 

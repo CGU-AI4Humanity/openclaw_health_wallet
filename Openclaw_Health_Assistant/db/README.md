@@ -1,6 +1,6 @@
 # SQLite database setup & testing
 
-**Lead:** Brandon Medina — MyWellWallet-compatible SQLite setup and validation for OpenClaw Health Assistant.
+**Lead:** Brandon Medina — local SQLite schema setup and validation for OpenClaw Health Assistant.
 
 MCP registration and FHIR remote connection: **Leonard Bryant** ([MCP_CONNECTIONS.md](../docs/MCP_CONNECTIONS.md)). Apple Health bridge and project management: **Mahesh Balan**.
 
@@ -13,20 +13,21 @@ MCP registration and FHIR remote connection: **Leonard Bryant** ([MCP_CONNECTION
 
 ```bash
 cd Openclaw_Health_Assistant
-cp config/.env.example config/.env   # optional: set MYWELLWALLET_DB_PATH
+cp config/.env.example config/.env   # optional: set OPENCLAW_HEALTH_DB_PATH
 ./scripts/init_db.sh
 ```
 
-Default path: `~/.openclaw-health-assistant/mywellwallet.db`
+Default path: `~/.openclaw-health-assistant/openclaw_health.db`
 
-## Load phone export fixture (testing)
+## Load a test SQLite file (optional)
 
-Uses a local MyWellWallet export (PHI — never commit). Default source: `~/myWellWallet/fixtures/test_database_export/mywellwallet_phone.sqlite3`
+For engineering validation only — pass an explicit source path (PHI — never commit):
 
 ```bash
-./scripts/copy_fixture_db.sh
-# or: ./scripts/copy_fixture_db.sh /path/to/mywellwallet.db
+./scripts/copy_fixture_db.sh /path/to/test.sqlite3
 ```
+
+Apple Health data for normal use comes from **Health Link** QR pairing, not from copying another app’s database.
 
 ## SQLite MCP server (Brandon — implementation & tool tests)
 
@@ -37,15 +38,15 @@ Uses a local MyWellWallet export (PHI — never commit). Default source: `~/myWe
 Smoke test after Leonard registers the server in OpenClaw:
 
 ```bash
-openclaw mcp doctor mywellwallet-sqlite --probe
+openclaw mcp doctor openclaw-health-sqlite --probe
 ```
 
-Implemented tools in [server.py](./server.py): `sqlite_health`, `list_fhir_patients`, `get_fhir_patient_bundle`, `search_fhir_resources`, `execute_read_query`, `upsert_fhir_patient`, `upsert_fhir_resource`, `health_metrics_summary`.
+Implemented tools in [server.py](../sqlite-mcp/server.py): `sqlite_health`, `list_fhir_patients`, `get_fhir_patient_bundle`, `search_fhir_resources`, `execute_read_query`, `upsert_fhir_patient`, `upsert_fhir_resource`, `health_metrics_summary`, `get_apple_health_sync_status`, `import_apple_health_json`.
 
 ## Validation queries (sqlite3 CLI)
 
 ```bash
-DB=~/.openclaw-health-assistant/mywellwallet.db
+DB=~/.openclaw-health-assistant/openclaw_health.db
 sqlite3 "$DB" "SELECT COUNT(*) FROM fhir_patients;"
 sqlite3 "$DB" "SELECT COUNT(*) FROM fhir_resources;"
 sqlite3 "$DB" "SELECT COUNT(*) FROM health_steps;"

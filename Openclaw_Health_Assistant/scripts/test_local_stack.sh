@@ -3,8 +3,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-DB="${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/mywellwallet.db}"
-export MYWELLWALLET_DB_PATH="${DB}"
+DB="${OPENCLAW_HEALTH_DB_PATH:-${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/openclaw_health.db}}"
+export OPENCLAW_HEALTH_DB_PATH="${DB}"
 export PYTHONPATH="${ROOT}/apple-health-bridge:${ROOT}/sqlite-mcp"
 
 PY="${ROOT}/sqlite-mcp/.venv/bin/python"

@@ -35,8 +35,8 @@ source "${ENV_FILE}"
 "${ROOT}/scripts/setup_sqlite_mcp_venv.sh"
 "${ROOT}/scripts/init_db.sh"
 
-if [[ "${COPY_FIXTURE:-}" == "1" ]] && [[ -f "${HOME}/myWellWallet/fixtures/test_database_export/mywellwallet_phone.sqlite3" ]]; then
-  "${ROOT}/scripts/copy_fixture_db.sh"
+if [[ -n "${COPY_FIXTURE:-}" ]]; then
+  "${ROOT}/scripts/copy_fixture_db.sh" "${COPY_FIXTURE}"
 fi
 
 OLLAMA_BIN="${OLLAMA_BIN:-/usr/local/opt/ollama/bin/ollama}"
@@ -62,19 +62,20 @@ grep -q 'OLLAMA_API_KEY' "${HOME}/.openclaw/.env" 2>/dev/null || \
 
 PY="${ROOT}/sqlite-mcp/.venv/bin/python"
 MCP_CWD="${ROOT}/sqlite-mcp"
-DB_PATH="${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/mywellwallet.db}"
+DB_PATH="${OPENCLAW_HEALTH_DB_PATH:-${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/openclaw_health.db}}"
 
-openclaw mcp add mywellwallet-sqlite \
+openclaw mcp remove mywellwallet-sqlite 2>/dev/null || true
+openclaw mcp add openclaw-health-sqlite \
   --command "${PY}" \
   --arg server.py \
   --cwd "${MCP_CWD}" \
-  --env "MYWELLWALLET_DB_PATH=${DB_PATH}" \
-  2>/dev/null || openclaw mcp add mywellwallet-sqlite \
+  --env "OPENCLAW_HEALTH_DB_PATH=${DB_PATH}" \
+  2>/dev/null || openclaw mcp add openclaw-health-sqlite \
   --command "${PY}" \
   --arg server.py \
   --cwd "${MCP_CWD}"
 
-openclaw mcp doctor mywellwallet-sqlite --probe || true
+openclaw mcp doctor openclaw-health-sqlite --probe || true
 
 if [[ -n "${FHIR_MCP_API_KEY:-}" ]]; then
 openclaw mcp add fhir-remote \

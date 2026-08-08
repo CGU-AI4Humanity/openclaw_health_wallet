@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Initialize MyWellWallet-compatible SQLite — Brandon Medina
+# Initialize local SQLite — Brandon Medina
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -10,7 +10,7 @@ if [[ -f "${ENV_FILE}" ]]; then
   source "${ENV_FILE}"
 fi
 
-DB_PATH="${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/mywellwallet.db}"
+DB_PATH="${OPENCLAW_HEALTH_DB_PATH:-${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/openclaw_health.db}}"
 mkdir -p "$(dirname "${DB_PATH}")"
 
 if command -v sqlite3 >/dev/null 2>&1; then

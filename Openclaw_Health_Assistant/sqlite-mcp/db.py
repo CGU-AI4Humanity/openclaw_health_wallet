@@ -1,4 +1,4 @@
-"""SQLite access for MyWellWallet-compatible schema."""
+"""SQLite access for OpenClaw Health Assistant local cache schema."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-DEFAULT_DB = Path.home() / ".openclaw-health-assistant" / "mywellwallet.db"
+DEFAULT_DB = Path.home() / ".openclaw-health-assistant" / "openclaw_health.db"
 
 _READ_ONLY = re.compile(
     r"^\s*(SELECT|WITH|PRAGMA\s+(table_info|database_list|foreign_key_list))\b",
@@ -21,14 +21,17 @@ _FORBIDDEN = re.compile(
 
 
 def db_path() -> Path:
-    return Path(os.environ.get("MYWELLWALLET_DB_PATH", str(DEFAULT_DB)))
+    explicit = os.environ.get("OPENCLAW_HEALTH_DB_PATH") or os.environ.get(
+        "MYWELLWALLET_DB_PATH"
+    )
+    return Path(explicit) if explicit else DEFAULT_DB
 
 
 def connect() -> sqlite3.Connection:
     path = db_path()
     if not path.is_file():
         raise FileNotFoundError(
-            f"Database not found at {path}. Run ../scripts/init_db.sh or ../scripts/copy_fixture_db.sh."
+            f"Database not found at {path}. Run ../scripts/init_db.sh (or copy_fixture_db.sh with a test SQLite file)."
         )
     conn = sqlite3.connect(str(path))
     conn.row_factory = sqlite3.Row
