@@ -184,7 +184,7 @@ Apple Health is authorized on **iPhone**; metrics are sent to a **small HTTP API
 ```
 
 1. Open the **Apple Health** tab → **Start pairing + show QR**.
-2. On iPhone, open the **Health Link** companion (see [SETUP_WIZARD_AND_APPLE_HEALTH.md](./docs/SETUP_WIZARD_AND_APPLE_HEALTH.md)) and scan the QR.
+2. On iPhone, build & run **[Health Link](../../Health_Link_iOS/)** (`xcodegen generate` → Xcode → device) and scan the QR.
 3. Grant **HealthKit** read access; the phone `POST`s JSON to `http://<your-mac>:8765/v1/health/sync` with header `X-Pairing-Token`.
 4. Wizard writes `APPLE_HEALTH_API_BASE_URL` and `APPLE_HEALTH_DEVICE_TOKEN` to **`config/.env`** and loads **`health_*`** SQLite tables.
 

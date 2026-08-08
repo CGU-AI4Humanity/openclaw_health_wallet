@@ -9,7 +9,7 @@ We showcase **two complementary implementations** in one monorepo:
 | Track | Agent stack | Primary use case |
 | --- | --- | --- |
 | **ZeroClaw — Retinal Health Assistant** (Santanu Ray) | ZeroClaw + Ollama (Qwen) + custom Retina MCP | **Fundus / retinal image analysis** (RETFound retinal age, heart-risk screening) |
-| **OpenClaw — Health Assistant** (Mahesh Balan, Brandon Medina, Leonard Bryant) | OpenClaw + Ollama (MedGemma) + SQLite MCP + [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) | **General health Q&A** over **your** EHR cache, labs, and **Apple Health** metrics |
+| **OpenClaw — Health Assistant** (Mahesh Balan, Brandon Medina, Leonard Bryant) | OpenClaw + Ollama (MedGemma) + SQLite MCP + [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) + **[Health Link iOS](./Health_Link_iOS/)** | **General health Q&A** over **your** EHR cache, labs, and **Apple Health** metrics |
 
 Both tracks share the same design idea: **local LLM for reasoning**, **MCP for tools**, **no requirement for GPT/Claude/etc. in the loop**.
 
@@ -55,7 +55,7 @@ flowchart TD
 
 ## Implementation 2 — OpenClaw personal health wallet (OpenClaw Health Assistant)
 
-**Directory:** `Openclaw_Health_Assistant/`  
+**Directory:** `Openclaw_Health_Assistant/` · iPhone companion: [`Health_Link_iOS/`](./Health_Link_iOS/)  
 **Setup guide:** [Openclaw_Health_Assistant/README.md](./Openclaw_Health_Assistant/README.md)
 
 **General health companion** on macOS: OpenClaw + **MedGemma** (Ollama) with:
@@ -63,7 +63,7 @@ flowchart TD
 - **Local SQLite** — same FHIR JSON schema as MyWellWallet (`fhir_patients`, `fhir_resources`, `health_*` tables).
 - **SQLite MCP** — agent reads/writes the cache via audited tools (Brandon Medina).
 - **FHIR MCP** — live fetch from the hosted gateway at [mcp-fhir-server.com](https://mcp-fhir-server.com/) ([source](https://github.com/maheshbalan/fhir-mcp-server)) (Leonard Bryant).
-- **Apple Health bridge** — sync from iPhone export or JSON inbox into SQLite (Mahesh Balan).
+- **Apple Health** — iPhone **[Health Link](./Health_Link_iOS/)** app: QR pairing → local Mac API → SQLite (Mahesh Balan).
 
 ```mermaid
 flowchart LR
@@ -72,7 +72,7 @@ flowchart LR
   OC --> LMCP[SQLite MCP]
   OC --> RMCP[FHIR MCP Server]
   LMCP --> DB[(Local SQLite)]
-  AH[Apple Health export] --> DB
+  HL[Health Link iOS] --> DB
   RMCP --> FHIR[FHIR backend + RAG]
 ```
 

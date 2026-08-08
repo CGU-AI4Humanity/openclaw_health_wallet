@@ -1,0 +1,22 @@
+name: OpenClawHealthLink
+options:
+  bundleIdPrefix: com.cgu.openclaw
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+settings:
+  SWIFT_VERSION: "5.9"
+targets:
+  OpenClawHealthLink:
+    type: application
+    platform: iOS
+    sources:
+      - OpenClawHealthLink
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.cgu.openclaw.healthlink
+      INFOPLIST_FILE: OpenClawHealthLink/Info.plist
+      CODE_SIGN_ENTITLEMENTS: OpenClawHealthLink/OpenClawHealthLink.entitlements
+      TARGETED_DEVICE_FAMILY: "1"
+      DEVELOPMENT_TEAM: ""
+    scheme:
+      testTargets: []

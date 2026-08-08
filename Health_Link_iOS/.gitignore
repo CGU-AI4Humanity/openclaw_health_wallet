@@ -1,0 +1,6 @@
+*.xcuserstate
+*.xcuserdatad
+xcuserdata/
+DerivedData/
+OpenClawHealthLink.xcodeproj/
+OpenClawHealthLink.xcworkspace/

@@ -123,7 +123,7 @@ Python wizard proves the flow first; Swift wraps the same scripts and pairing se
 | Setup Wizard (Tkinter) | **Prototype** — `setup-wizard/wizard.py` |
 | Local pairing API | **Prototype** — `pairing_server.py` |
 | QR in wizard | **Yes** (needs `pip install qrcode[pil]`) |
-| iOS Health Link app | **Design only** — build or reuse MyWellWallet “Link Mac” screen |
+| iOS Health Link app | **In monorepo** — [`Health_Link_iOS/`](../../Health_Link_iOS/) |
 | Mac HealthKit direct ingest | **Future** — Swift helper |
 
 ---
