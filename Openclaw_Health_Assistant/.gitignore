@@ -17,8 +17,8 @@ venv/
 *.egg-info/
 
 # Node / OpenClaw local overrides
-node_modules/
-dist/
+setup-wizard/.venv/
+
 
 # macOS
 .DS_Store

@@ -39,15 +39,28 @@ flowchart LR
   OC --> SMCP[SQLite MCP]
   OC --> FMCP[FHIR MCP]
   SMCP --> DB[(SQLite cache)]
-  PH[iPhone MyWellWallet QR] --> API[Apple Health API]
+  PH[iPhone Health Link app] --> API[Local Health API :8765]
   API --> DB
   FMCP --> EHR[FHIR backend]
 ```
 
 - **[FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server)** — hosted API at [mcp-fhir-server.com](https://mcp-fhir-server.com/).
-- **[MyWellWallet](https://github.com/maheshbalan/myWellWallet)** — iPhone app; used to authorize **Apple Health** and (optionally) sync wearable data to your Mac via **API** after **QR pairing**.
+- **[MyWellWallet](https://github.com/maheshbalan/myWellWallet)** — related iOS health wallet research app (FHIR); **not required** for Apple Health pairing in this track.
+- **iPhone “Health Link” companion** (thin app) — scans QR, reads HealthKit, POSTs to Mac — see [docs/SETUP_WIZARD_AND_APPLE_HEALTH.md](./docs/SETUP_WIZARD_AND_APPLE_HEALTH.md).
 
 ---
+
+## Easiest path: Setup Wizard (recommended for class demo)
+
+One Mac app walks through install checks, FHIR form, QR pairing, and marks steps **done** so you can resume later:
+
+```bash
+./scripts/run_setup_wizard.sh
+```
+
+Design and iPhone companion plan: **[docs/SETUP_WIZARD_AND_APPLE_HEALTH.md](./docs/SETUP_WIZARD_AND_APPLE_HEALTH.md)**.
+
+Manual steps below match the same order if you prefer the terminal.
 
 ## Step 1 — Clone the repository
 
@@ -124,8 +137,8 @@ chmod 600 config/.env
 | `FHIR_PATIENT_DOB` | `YYYY-MM-DD` | Patient search |
 | `MYWELLWALLET_DB_PATH` | Usually default | Local SQLite file |
 | `FHIR_MCP_BASE_URL` | Usually `https://mcp-fhir-server.com` | API host |
-| `APPLE_HEALTH_API_BASE_URL` | From admin / pairing (Step 5) | MyWellWallet sync API after QR |
-| `APPLE_HEALTH_DEVICE_TOKEN` | After QR scan on iPhone | Links this Mac to your phone session |
+| `APPLE_HEALTH_API_BASE_URL` | After QR pairing | Mac local sync API |
+| `APPLE_HEALTH_DEVICE_TOKEN` | After QR pairing | Pairing secret (local `.env` only) |
 | `OLLAMA_MEDGEMMA_MODEL` | e.g. `medgemma:4b` | Local LLM tag |
 
 ---
@@ -160,43 +173,33 @@ Actual MCP registration in OpenClaw happens in [Step 8](#step-8-register-mcp-ser
 
 ---
 
-## Step 5 — Connect Apple Health (QR + API)
+## Step 5 — Connect Apple Health (QR + local API)
 
-**Target flow (recommended for class demos):**
+Apple Health is authorized on **iPhone**; metrics are sent to a **small HTTP API on your Mac** (no MyWellWallet export path).
 
-1. Install **[MyWellWallet](https://github.com/maheshbalan/myWellWallet)** on your **iPhone** (TestFlight or Xcode build per course instructions).
-2. On your **Mac**, after Step 8, start the pairing helper (displays a **QR code** and short code):
+### Option A — Setup Wizard (best for demo)
 
-   ```bash
-   ./scripts/apple_health_pairing.sh
-   ```
+```bash
+./scripts/run_setup_wizard.sh
+```
 
-3. On **iPhone**, open MyWellWallet → **Settings → Link Mac** (or scan the QR). Approve **Apple Health** read access (glucose, heart rate, steps, blood pressure, clinical labs as offered).
-4. The phone calls the **Apple Health sync API** configured in `config/.env` (`APPLE_HEALTH_API_BASE_URL` + `APPLE_HEALTH_DEVICE_TOKEN` after pairing). Metrics land in the same **`health_*`** SQLite tables as the mobile app.
-5. Confirm on Mac:
+1. Open the **Apple Health** tab → **Start pairing + show QR**.
+2. On iPhone, open the **Health Link** companion (see [SETUP_WIZARD_AND_APPLE_HEALTH.md](./docs/SETUP_WIZARD_AND_APPLE_HEALTH.md)) and scan the QR.
+3. Grant **HealthKit** read access; the phone `POST`s JSON to `http://<your-mac>:8765/v1/health/sync` with header `X-Pairing-Token`.
+4. Wizard writes `APPLE_HEALTH_API_BASE_URL` and `APPLE_HEALTH_DEVICE_TOKEN` to **`config/.env`** and loads **`health_*`** SQLite tables.
 
-   ```bash
-   ./scripts/test_local_stack.sh
-   ```
+### Option B — Terminal QR only
 
-   Or in OpenClaw (Step 10): ask the agent to run `get_apple_health_sync_status`.
+```bash
+./scripts/apple_health_pairing.sh   # prints QR if qrencode/qrcode installed
+# In another terminal, keep pairing server running via the wizard or pairing_server.py
+```
 
-**Research note:** QR/API pairing is the **supported direction** for this repo; implementation may ship in MyWellWallet + `apple-health-bridge` updates. Until your build includes QR pairing, use the **interim path** below (still writes to SQLite via MCP).
+### Mac HealthKit (optional accelerator)
 
-### Interim path (export / MCP — for testing now)
+If the **Health** app on your Mac already syncs iPhone data, a future native helper can read **Mac HealthKit** directly—same SQLite tables, no phone POST. See design doc **Path A**.
 
-If QR/API is not yet available on your phone build:
-
-1. Export the MyWellWallet SQLite from iPhone to your Mac ([export instructions](https://github.com/maheshbalan/myWellWallet/blob/main/fixtures/test_database_export/README.md)).
-2. Set in `config/.env`:
-
-   ```bash
-   APPLE_HEALTH_PHONE_DB_PATH=/path/to/mywellwallet.db
-   ```
-
-3. After Step 10, prompt OpenClaw to call **`sync_apple_health_from_phone_database`** (see [Step 10](#step-10-start-openclaw-and-sync-data-once)).
-
-Alternative: JSON drop folder — [apple-health-bridge/inbox/README.md](./apple-health-bridge/inbox/README.md) + tool **`import_apple_health_json`**.
+Developer-only tools (`sync_apple_health_from_phone_database`, JSON inbox) remain in SQLite MCP for lab use but are **not** part of the class happy path.
 
 ---
 
