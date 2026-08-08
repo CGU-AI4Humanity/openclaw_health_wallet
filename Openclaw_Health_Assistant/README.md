@@ -2,7 +2,7 @@
 
 A **local-first personal health companion** on macOS: **OpenClaw** calls MCP tools, **MedGemma** (via **Ollama**) answers using **your** data in **SQLite**—no frontier cloud model required for chat.
 
-> **Medical disclaimer:** Research prototype only—not for diagnosis or treatment decisions.
+> **Medical disclaimer:** Research software only—not for diagnosis or treatment decisions.
 
 **Contributors:** Mahesh Balan (integration, Apple Health, PM) · Brandon Medina (SQLite + SQLite MCP) · Leonard Bryant (OpenClaw MCP wiring). See [CONTRIBUTORS.md](./CONTRIBUTORS.md). Monorepo overview: [../README.md](../README.md).
 
@@ -50,9 +50,9 @@ flowchart LR
 
 ---
 
-## Easiest path: Setup Wizard (recommended for class demo)
+## Recommended path: Setup Wizard
 
-One Mac app walks through install checks, FHIR form, QR pairing, and marks steps **done** so you can resume later:
+The Mac setup assistant walks through install verification, FHIR credentials, QR-based Apple Health pairing, and resumable progress:
 
 ```bash
 ./scripts/run_setup_wizard.sh
@@ -147,7 +147,7 @@ chmod 600 config/.env
 
 ### 4a. Request an API key (admin)
 
-1. Contact the **FHIR MCP Server administrator** for your class or org (see [fhir-mcp-server](https://github.com/maheshbalan/fhir-mcp-server) / course instructions).
+1. Contact the **FHIR MCP Server administrator** for your organization or study (see [fhir-mcp-server](https://github.com/maheshbalan/fhir-mcp-server) documentation).
 2. Admin creates an **`X-API-Key`** for you on the hosted service ([mcp-fhir-server.com](https://mcp-fhir-server.com/)).
 3. Admin sends the key through a **private channel** (email, 1Password, etc.)—**not** via a public GitHub issue or commit.
 4. You paste the key into **`config/.env`**:
@@ -177,7 +177,7 @@ Actual MCP registration in OpenClaw happens in [Step 8](#step-8-register-mcp-ser
 
 Apple Health is authorized on **iPhone**; metrics are sent to a **small HTTP API on your Mac** (no MyWellWallet export path).
 
-### Option A — Setup Wizard (best for demo)
+### Option A — Setup Wizard (recommended)
 
 ```bash
 ./scripts/run_setup_wizard.sh
@@ -195,11 +195,9 @@ Apple Health is authorized on **iPhone**; metrics are sent to a **small HTTP API
 # In another terminal, keep pairing server running via the wizard or pairing_server.py
 ```
 
-### Mac HealthKit (optional accelerator)
+Optional **Mac HealthKit** direct ingestion may be added later for hosts that already sync Health data from iPhone.
 
-If the **Health** app on your Mac already syncs iPhone data, a future native helper can read **Mac HealthKit** directly—same SQLite tables, no phone POST. See design doc **Path A**.
-
-Developer-only tools (`sync_apple_health_from_phone_database`, JSON inbox) remain in SQLite MCP for lab use but are **not** part of the class happy path.
+Legacy SQLite MCP tools (`sync_apple_health_from_phone_database`, JSON inbox) remain available for engineering and data recovery; they are not part of the standard operator workflow.
 
 ---
 
@@ -240,7 +238,7 @@ Main tools (Brandon Medina):
 | `search_fhir_resources` | Conditions, Observations, etc. |
 | `execute_read_query` | Read-only SQL on `health_*` / FHIR tables |
 | `upsert_fhir_patient` / `upsert_fhir_resource` | After FHIR MCP fetch |
-| `sync_apple_health_from_phone_database` | Interim Apple Health import |
+| `sync_apple_health_from_phone_database` | Legacy import from exported SQLite (engineering use) |
 | `get_apple_health_sync_status` | Pairing/sync metadata |
 
 Requires **`mcp[cli]==1.12.4`** (installed by the script).
@@ -314,7 +312,7 @@ openclaw tui
 
 Run **one prompt at a time** (copy from below; replace names/DOB with your `config/.env` values).
 
-### Prompt A — Apple Health (after QR/API or interim export)
+### Prompt A — Apple Health (after QR/API or optional file import)
 
 ```text
 Use only mywellwallet-sqlite tools.
@@ -392,7 +390,7 @@ Runs Steps 6–9 automation (venv, DB, MedGemma patch, MCP wire, smoke test). Yo
 | SQLite MCP probe fails | `./scripts/setup_sqlite_mcp_venv.sh`; check `MYWELLWALLET_DB_PATH` |
 | FHIR MCP 401 | Valid `FHIR_MCP_API_KEY`; re-run `wire_mcp_servers.sh` |
 | Wrong patient | Fix `FHIR_PATIENT_*` in `config/.env` |
-| Empty `health_*` tables | Complete Step 5 (QR/API or interim sync prompt) |
+| Empty `health_*` tables | Complete Step 5 (QR/API pairing or optional import path) |
 | Model ignores tools | Confirm `openclaw mcp status`; use explicit “must use mywellwallet-sqlite” prompts |
 | Raw JSON tool output | Ollama `baseUrl` must not use `/v1`; re-run `configure_medgemma.sh` |
 
@@ -415,4 +413,4 @@ Openclaw_Health_Assistant/
 
 ## Project lead
 
-**Mahesh Balan** — OpenClaw Health Assistant, CGU IST 362 / DTech.
+**Mahesh Balan** — OpenClaw Health Assistant integration, Claremont Graduate University Doctor of Technology program.

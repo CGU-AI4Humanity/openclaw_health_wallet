@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OpenClaw Health Assistant — macOS setup wizard (prototype)."""
+"""OpenClaw Health Assistant — macOS setup wizard."""
 
 from __future__ import annotations
 

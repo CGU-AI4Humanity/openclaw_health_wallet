@@ -40,13 +40,13 @@ open OpenClawHealthLink.xcodeproj
 
 ---
 
-## Demo flow (class)
+## End-to-end workflow
 
 1. **Mac:** `cd Openclaw_Health_Assistant && ./scripts/run_setup_wizard.sh` → Apple Health → **Start pairing + show QR**
-2. **iPhone:** Build & run **Health Link** → **Scan QR code**
-3. Tap **Authorize & sync to Mac** → allow Health access
-4. Mac wizard shows paired; SQLite `health_*` tables populate
-5. Continue wizard → Ollama → **OpenClaw**
+2. **iPhone:** Build and run **Health Link** → **Scan QR code**
+3. Tap **Authorize & sync to Mac** and grant Health access
+4. Confirm pairing on the Mac; SQLite `health_*` tables are populated
+5. Complete remaining wizard steps (Ollama, OpenClaw registration), then launch OpenClaw
 
 ---
 

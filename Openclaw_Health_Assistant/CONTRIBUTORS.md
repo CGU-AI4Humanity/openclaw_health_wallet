@@ -16,4 +16,4 @@ IST 362 / CGU Doctor of Technology research ([openclaw_health_wallet](https://gi
 
 ## Citing this work
 
-When documenting class deliverables, attribute subsystems by the rows above rather than listing the whole stack under one name.
+When citing this work in publications or reports, attribute subsystems using the table above rather than attributing the entire stack to one contributor.

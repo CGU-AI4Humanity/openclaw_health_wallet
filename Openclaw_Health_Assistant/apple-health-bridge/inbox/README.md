@@ -1,8 +1,10 @@
 # Apple Health JSON inbox
 
-Drop **`health_export.json`** here for the OpenClaw assistant to import via MCP tool `import_apple_health_json`.
+Optional **file-based import** when operators supply a pre-built JSON export. The SQLite MCP tool **`import_apple_health_json`** reads files placed here.
 
-Example shape:
+The **standard workflow** uses [Health Link](../../../Health_Link_iOS/) and the Mac pairing API—not this inbox.
+
+Example payload:
 
 ```json
 {
@@ -23,6 +25,4 @@ Example shape:
 }
 ```
 
-On macOS, the primary path is **`sync_apple_health_from_phone_database`**, which copies `health_*` tables from a MyWellWallet iPhone SQLite export (same as Brandon’s fixture copy flow).
-
-**Lead:** Mahesh Balan — Apple Health integration.
+**Lead:** Mahesh Balan.

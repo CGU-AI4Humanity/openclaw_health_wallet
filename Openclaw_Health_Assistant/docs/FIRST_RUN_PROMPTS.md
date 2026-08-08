@@ -10,7 +10,7 @@ Replace `FHIR_PATIENT_*` placeholders with values from your gitignored **`config
 
 ## Prompt A — Apple Health (Step 10)
 
-After QR/API pairing **or** interim phone export:
+After QR/API pairing **or** optional JSON/SQLite import (see [apple-health-bridge](../apple-health-bridge/README.md)):
 
 ```text
 Use only mywellwallet-sqlite tools.

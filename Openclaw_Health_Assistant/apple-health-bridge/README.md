@@ -2,46 +2,38 @@
 
 **Lead:** Mahesh Balan — Apple Health integration and sync into MyWellWallet-compatible SQLite `health_*` tables.
 
-SQLite schema and MCP data access: **Brandon Medina**. OpenClaw MCP wiring: **Leonard Bryant**.
+SQLite schema and MCP access: **Brandon Medina**. OpenClaw MCP registration: **Leonard Bryant**.
 
-Ingest Apple Health data into the same tables as MyWellWallet iOS (`health_glucose`, `health_heart_rate`, `health_steps`, `health_blood_pressure`, `health_lab_results`, `health_sync_settings`).
+## Standard workflow
 
-## macOS considerations
+1. Mac **Setup Wizard** or **`pairing_server.py`** listens on the local network.
+2. iPhone **[Health Link](../../Health_Link_iOS/)** scans the QR code and authorizes HealthKit.
+3. The phone POSTs normalized JSON to **`/v1/health/sync`**; rows land in `health_glucose`, `health_heart_rate`, `health_steps`, `health_blood_pressure`, `health_lab_results`, and related tables.
 
-- The **Health** app on Mac shows data synced from iPhone; programmatic access differs from iOS HealthKit.
-- Options to evaluate:
-  1. **Native Swift CLI** with HealthKit (macOS 13+ where entitlements allow).
-  2. **Shortcuts / automation** exporting CSV or JSON on a schedule into `data/inbox/`.
-  3. **Companion sync** from the MyWellWallet iOS app via encrypted export (longer term).
+See [README Step 5](../README.md#step-5-connect-apple-health-qr--local-api) and [SETUP_WIZARD_AND_APPLE_HEALTH.md](../docs/SETUP_WIZARD_AND_APPLE_HEALTH.md).
 
-## Apple Health on macOS
+## Components
 
-**Primary (target):** QR pairing via `./scripts/apple_health_pairing.sh` → MyWellWallet on iPhone → **API** → SQLite. See [README Step 5](../README.md#step-5-connect-apple-health-qr--api).
+| File | Role |
+| --- | --- |
+| `pairing_server.py` | Local HTTP API and token validation |
+| `health_sync.py` | JSON → SQLite insert logic |
+| `inbox/` | Optional file-based JSON import |
 
-**Interim (testing):** iPhone SQLite export or JSON inbox — MCP tools below.
+## MCP tools (via SQLite MCP server)
 
 | Tool | Purpose |
 | --- | --- |
 | `get_apple_health_sync_status` | Read `health_sync_settings` |
-| `sync_apple_health_from_phone_database` | Copy `health_*` tables from iPhone MyWellWallet SQLite export |
-| `import_apple_health_json` | Import `apple-health-bridge/inbox/*.json` |
+| `import_apple_health_json` | Import structured JSON from `inbox/` |
+| `sync_apple_health_from_phone_database` | Legacy bulk copy from an exported SQLite file (engineering use) |
 
-Example prompt in OpenClaw:
+## macOS HealthKit (future)
 
-```text
-Call get_apple_health_sync_status for my current user, then summarize health_steps
-and health_heart_rate counts from health_metrics_summary. Medical disclaimer.
-```
+Where entitlements allow, a native Mac helper may read the **Health** app database directly when iPhone data is already synced—same SQLite schema, no phone POST.
 
 ## Reference
 
-MyWellWallet iOS: [github.com/maheshbalan/myWellWallet](https://github.com/maheshbalan/myWellWallet) — `lib/services/apple_health_service.dart`, `docs/APPLE_HEALTH_SETUP.md`.
+Related mobile research: [MyWellWallet](https://github.com/maheshbalan/myWellWallet).
 
-## Files to add
-
-```text
-apple-health-bridge/
-├── README.md
-├── (swift or python ingest)
-└── config/sync_types.json
-```
+**Lead:** Mahesh Balan.

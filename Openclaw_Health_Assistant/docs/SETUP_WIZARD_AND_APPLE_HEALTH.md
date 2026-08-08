@@ -1,30 +1,30 @@
 # Setup Wizard & Apple Health — Design (Mahesh Balan)
 
-Goals for **class demo** and **student self-service**:
+Design goals for deployment and repeatable onboarding:
 
-1. One **Mac app** (or wizard) that shows **what is done / what is next**.
-2. **FHIR MCP** — form for API key + first name + last name + DOB → writes **`config/.env`** (never Git).
-3. **Apple Health** — **no MyWellWallet SQLite export** on the happy path; **QR on Mac** → **iPhone authorizes HealthKit** → data hits a **local API on the Mac** → SQLite.
-4. After wizard completes, student runs **Ollama + OpenClaw** and chats with **SQLite-grounded MedGemma**.
+1. One **Mac setup assistant** that shows completed steps and remaining work.
+2. **FHIR MCP** — capture API key, first name, last name, and date of birth in **`config/.env`** (never version control).
+3. **Apple Health** — primary path: **QR on Mac** → **iPhone HealthKit authorization** → **local HTTP API on the Mac** → **SQLite** (no dependency on exporting another app’s database).
+4. After configuration, the operator starts **Ollama + OpenClaw** for **SQLite-grounded** MedGemma inference.
 
 ---
 
-## Why there is no “Apple Health REST API” on the web
+## Why there is no public “Apple Health REST API”
 
-Apple does not offer a public cloud API for third-party apps to read HealthKit. Supported patterns:
+Apple does not expose HealthKit through a general-purpose cloud API for third parties. Supported integration patterns:
 
-| Approach | Mac reads data? | iPhone needed? | Demo quality |
+| Approach | Mac receives data | iPhone role | Notes |
 | --- | --- | --- | --- |
-| **A. Mac HealthKit** | Yes (Health app data synced from iPhone) | iPhone must sync to iCloud Health | Good if lecturer’s Mac already has Health populated |
-| **B. QR + thin iOS companion (recommended)** | Via **local HTTP** on Mac | Yes — scan QR, grant HealthKit once | **Best story** for class; no MyWellWallet dependency |
-| **C. MyWellWallet full app** | Export / API via main app | Yes | Powerful but couples demo to another repo |
-| **D. Manual export / JSON inbox** | File drop | Optional | Dev fallback only |
+| **A. Mac HealthKit** | Direct read from Health app (often synced from iPhone via iCloud) | Indirect | Useful when the Mac Health database is already populated |
+| **B. QR + iOS companion (recommended)** | Local HTTP on Mac | Scan QR, authorize HealthKit, POST JSON | Decoupled from MyWellWallet; matches OpenClaw Health Link |
+| **C. Full MyWellWallet app** | Export or app-specific API | Required | Shares research codebase but couples workflows |
+| **D. File import / JSON inbox** | Manual or scripted drop | Optional | Secondary path for development and recovery |
 
-**Recommendation for CGU demo:** **B** as the product narrative, with **A** as optional accelerator on the presenter’s machine. **D** stays undocumented in the main README.
+**Recommended production narrative:** **B**, with **A** as an optional enhancement on macOS hosts that already sync Health data. **D** is documented only for engineering fallback.
 
 ---
 
-## Recommended architecture (QR + local API)
+## Architecture (QR + local API)
 
 ```mermaid
 sequenceDiagram
@@ -45,92 +45,92 @@ sequenceDiagram
   S->>W: mark step complete, update config/.env
 ```
 
-### Mac components (this repo)
+### Mac components (this repository)
 
-| Piece | Role |
+| Component | Role |
 | --- | --- |
-| **`setup-wizard/`** | Tkinter UI: checks, FHIR form, QR, resume state |
-| **`apple-health-bridge/pairing_server.py`** | Local API + token auth |
-| **`scripts/apple_health_pairing.sh`** | CLI QR for terminals |
+| **`setup-wizard/`** | Tkinter UI: prerequisite checks, FHIR form, QR display, resumable state |
+| **`apple-health-bridge/pairing_server.py`** | Local pairing API and token validation |
+| **`scripts/apple_health_pairing.sh`** | CLI QR output for headless setups |
 
-### iPhone component (thin companion — separate small app)
+### iPhone component
 
-Minimal **“OpenClaw Health Link”** iOS app (future or subset of MyWellWallet):
+**OpenClaw Health Link** ([`Health_Link_iOS/`](../../Health_Link_iOS/)):
 
-1. Scan QR or open universal link.
+1. Scan QR or open the universal / custom URL.
 2. Parse `host`, `port`, `token`.
-3. `HKHealthStore.requestAuthorization` for glucose, HR, steps, BP, clinical types as needed.
-4. Query samples (e.g. last 90 days).
-5. `POST http://<host>:<port>/v1/health/sync` with header `X-Pairing-Token: <token>` and JSON body.
+3. Request HealthKit read authorization (glucose, heart rate, steps, blood pressure, and related types).
+4. Query samples (default window: last 90 days).
+5. `POST http://<host>:<port>/v1/health/sync` with header `X-Pairing-Token: <token>` and a JSON body aligned with `health_sync.py`.
 
-No EHR/FHIR on the phone required for this flow.
+FHIR/EHR logic on the phone is not required for this sync path.
 
-### URL scheme (decoupled from MyWellWallet)
+### URL scheme
 
 ```text
 openclaw-health://pair?host=192.168.1.42&port=8765&token=<uuid>
 ```
 
-HTTPS universal link is an alternative when you host a pairing page for class.
+HTTPS universal links are an alternative when operating a hosted pairing landing page.
 
 ---
 
-## Setup Wizard UX (demo script)
+## Setup Wizard user flow
 
 1. Launch **`./scripts/run_setup_wizard.sh`**
-2. Screen 1: **Prerequisites** — green checks for Node 24, Ollama, OpenClaw, Python; “Install missing” hints.
-3. Screen 2: **Local database & SQLite MCP** — run init + venv; mark done.
-4. Screen 3: **FHIR MCP** — fields: API key, first name, last name, DOB → **Save to config/.env** → optional **Wire MCP** button.
-5. Screen 4: **Apple Health** — **Start pairing** → big **QR** + “Waiting for iPhone…” → on POST success, **Done**.
-6. Screen 5: **Ollama / MedGemma** — pull model + `configure_medgemma.sh`.
-7. Screen 6: **Ready** — copy button for OpenClaw first-run prompt; “Launch OpenClaw TUI” instructions.
+2. **Prerequisites** — verify Node 24, Ollama, OpenClaw, Python; surface install guidance for missing components.
+3. **Local database & SQLite MCP** — initialize schema and Python venv.
+4. **FHIR MCP** — enter API key, first name, last name, DOB; persist to **`config/.env`**; optionally register MCP servers.
+5. **Apple Health** — start pairing server, display QR, wait for iPhone POST; mark complete on success.
+6. **Ollama / MedGemma** — pull model and apply OpenClaw configuration patch.
+7. **Ready** — instructions for OpenClaw TUI and first-run synchronization prompts.
 
-Progress persisted in:
+Progress file:
 
 ```text
 ~/.openclaw-health-assistant/setup_progress.json
 ```
 
-Re-opening the wizard jumps to the **first incomplete step**.
+Re-launching the wizard resumes at the first incomplete step.
 
 ---
 
-## Alternative: native SwiftUI menu bar app (Phase 2)
+## Future work: native SwiftUI setup application
 
-For App Store–quality demo:
+A menu-bar or standalone SwiftUI application could provide:
 
-- SwiftUI + HealthKit (Mac) for **Path A** on supported macOS versions.
-- Same wizard steps embedded; QR window uses `CoreImage` CIQRCodeGenerator.
-- Package as **`OpenClaw Health Setup.app`** for double-click launch.
+- HealthKit-on-Mac ingestion (**Path A**) where entitlements allow.
+- Embedded wizard steps with native QR rendering (`CoreImage`).
+- Distribution as **OpenClaw Health Setup.app**.
 
-Python wizard proves the flow first; Swift wraps the same scripts and pairing server.
-
----
-
-## Security notes (say this in class)
-
-- Pairing token is **single-use / short-lived** on local network only.
-- Bind server to **LAN IP** or **localhost + USB tunnel** for strict environments.
-- **Never** commit `.env`, tokens, or SQLite with PHI.
-- FHIR API keys are **per-student**, issued by admin out of band.
+The current Python wizard validates the workflow; a native shell can invoke the same scripts and pairing server.
 
 ---
 
-## What exists today in the repo
+## Security considerations
 
-| Feature | Status |
+- Pairing tokens should be **short-lived** and scoped to the **local network** session.
+- Bind the pairing server to a LAN address, or localhost with an explicit tunnel, in restricted environments.
+- Do not commit **`.env`**, pairing tokens, or SQLite files containing PHI.
+- FHIR MCP API keys are **per operator**, issued by an administrator through private channels.
+
+---
+
+## Implementation status
+
+| Capability | Status |
 | --- | --- |
-| Setup Wizard (Tkinter) | **Prototype** — `setup-wizard/wizard.py` |
-| Local pairing API | **Prototype** — `pairing_server.py` |
-| QR in wizard | **Yes** (needs `pip install qrcode[pil]`) |
-| iOS Health Link app | **In monorepo** — [`Health_Link_iOS/`](../../Health_Link_iOS/) |
-| Mac HealthKit direct ingest | **Future** — Swift helper |
+| Setup Wizard (Tkinter) | Available — `setup-wizard/wizard.py` |
+| Local pairing API | Available — `pairing_server.py` |
+| QR in wizard | Available (requires `pip install qrcode[pil]`) |
+| iOS Health Link | Available — [`Health_Link_iOS/`](../../Health_Link_iOS/) |
+| Mac HealthKit direct ingest | Planned — native helper |
 
 ---
 
-## Class demo talking points
+## Research rationale (summary)
 
-1. “All AI runs **locally** (MedGemma); cloud is optional FHIR **your** admin gateway.”
-2. “**MCP** is the USB-C of tools — SQLite + FHIR are two plugs.”
-3. “**QR** is only pairing; health bytes go **directly Mac ← iPhone** on Wi‑Fi, not through a social login.”
-4. Wizard shows **resume** — students who fail step 4 fix it and reopen without redoing step 2.
+1. **Local inference** (MedGemma via Ollama) keeps conversational reasoning on-device; remote FHIR MCP is an optional, authenticated data plane.
+2. **MCP** standardizes tool access to SQLite and FHIR backends without embedding credentials in the model.
+3. **QR pairing** establishes trust between phone and Mac; health payloads traverse **local Wi‑Fi**, not a multi-tenant social login.
+4. **Resumable setup** reduces friction when operators fix a single failed step without repeating the full install sequence.

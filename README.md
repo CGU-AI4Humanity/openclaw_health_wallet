@@ -2,7 +2,7 @@
 
 **IST 362 — Advances in AI and Quantum Computing** · Claremont Graduate University · Doctor of Technology research
 
-This repository demonstrates how **OpenClaw-family local agents** (OpenClaw, ZeroClaw) plus **Ollama** can act as a **personal health companion** on your own machine—without sending conversations to frontier cloud models. Clinical and wearable data stay under your control; the agent uses **Model Context Protocol (MCP)** tools to read structured health records and explain them in plain language.
+This repository documents how **OpenClaw-family local agents** (OpenClaw, ZeroClaw) plus **Ollama** can act as a **personal health companion** on your own machine—without sending conversations to frontier cloud models. Clinical and wearable data stay under your control; the agent uses **Model Context Protocol (MCP)** tools to read structured health records and explain them in plain language.
 
 We showcase **two complementary implementations** in one monorepo:
 
