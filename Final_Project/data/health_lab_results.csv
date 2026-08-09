@@ -1,0 +1,151 @@
+id,user_id,name,loinc_code,value_numeric,value_string,unit,reference_range_low,reference_range_high,reference_range_text,source_name,source_bundle_id,specimen_type,recorded_at,created_at
+synthetic_lab_PT0001_005,PT0001,Creatinine,2160-0,0.92,,mg/dL,0.7,1.3,Normal kidney function,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0001_002,PT0001,Glucose (fasting),1558-6,92,,mg/dL,70,99,Normal fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0001_001,PT0001,Hemoglobin A1c,4548-4,5.6,,%,4.0,5.6,Normal <5.7%,Synthetic Quest Demo Lab,,Blood,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0001_003,PT0001,LDL Cholesterol,13457-7,94,,mg/dL,,,<100 mg/dL optimal,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0001_004,PT0001,eGFR,33914-3,88,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0002_002,PT0002,Glucose (fasting),1558-6,168,,mg/dL,70,99,High fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0002_001,PT0002,Hemoglobin A1c,4548-4,8.4,,%,4.0,5.6,High; diabetes not at goal,Synthetic Quest Demo Lab,,Blood,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0002_003,PT0002,LDL Cholesterol,13457-7,118,,mg/dL,,,Above optimal for diabetes,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0002_004,PT0002,Triglycerides,2571-8,184,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0002_005,PT0002,eGFR,33914-3,72,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0003_002,PT0003,Creatinine,2160-0,1.58,,mg/dL,0.7,1.3,Elevated,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0003_001,PT0003,Hemoglobin A1c,4548-4,7.6,,%,4.0,5.6,Above diabetes goal,Synthetic Quest Demo Lab,,Blood,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0003_005,PT0003,Potassium,2823-3,5.2,,mEq/L,3.5,5.1,Mildly high,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0003_004,PT0003,Urine Albumin/Creatinine Ratio,9318-7,165,,mg/g,,30,Elevated albuminuria,Synthetic Quest Demo Lab,,Urine,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0003_003,PT0003,eGFR,33914-3,48,,mL/min/1.73m2,60,,Below 60 suggests CKD,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0004_004,PT0004,HDL Cholesterol,2085-9,36,,mg/dL,40,,>40 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0004_001,PT0004,Hemoglobin A1c,4548-4,7.1,,%,4.0,5.6,Slightly above goal,Synthetic Quest Demo Lab,,Blood,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0004_003,PT0004,LDL Cholesterol,13457-7,142,,mg/dL,,,High LDL,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0004_002,PT0004,Total Cholesterol,2093-3,224,,mg/dL,,,<200 mg/dL desirable,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0004_005,PT0004,Triglycerides,2571-8,226,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0005_005,PT0005,COVID-19 PCR,94500-6,,Not detected,,,,Negative,Synthetic Demo Hospital,,Nasopharyngeal,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0005_004,PT0005,Hemoglobin,718-7,12.8,,g/dL,13.5,17.5,Slightly low,Synthetic Quest Demo Lab,,Blood,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0005_001,PT0005,Hemoglobin A1c,4548-4,6.4,,%,4.0,5.6,Prediabetes range,Synthetic Quest Demo Lab,,Blood,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0005_003,PT0005,TSH,3016-3,2.1,,mIU/L,0.4,4.0,Normal thyroid function,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0005_002,PT0005,"Vitamin D, 25-OH",1989-3,22,,ng/mL,30,100,Low vitamin D,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0006_005,PT0006,Creatinine,2160-0,0.92,,mg/dL,0.7,1.3,Normal kidney function,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0006_002,PT0006,Glucose (fasting),1558-6,92,,mg/dL,70,99,Normal fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0006_001,PT0006,Hemoglobin A1c,4548-4,5.6,,%,4.0,5.6,Normal <5.7%,Synthetic Quest Demo Lab,,Blood,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0006_003,PT0006,LDL Cholesterol,13457-7,94,,mg/dL,,,<100 mg/dL optimal,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0006_004,PT0006,eGFR,33914-3,88,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0007_002,PT0007,Glucose (fasting),1558-6,168,,mg/dL,70,99,High fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0007_001,PT0007,Hemoglobin A1c,4548-4,8.4,,%,4.0,5.6,High; diabetes not at goal,Synthetic Quest Demo Lab,,Blood,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0007_003,PT0007,LDL Cholesterol,13457-7,118,,mg/dL,,,Above optimal for diabetes,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0007_004,PT0007,Triglycerides,2571-8,184,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0007_005,PT0007,eGFR,33914-3,72,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0008_002,PT0008,Creatinine,2160-0,1.58,,mg/dL,0.7,1.3,Elevated,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0008_001,PT0008,Hemoglobin A1c,4548-4,7.6,,%,4.0,5.6,Above diabetes goal,Synthetic Quest Demo Lab,,Blood,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0008_005,PT0008,Potassium,2823-3,5.2,,mEq/L,3.5,5.1,Mildly high,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0008_004,PT0008,Urine Albumin/Creatinine Ratio,9318-7,165,,mg/g,,30,Elevated albuminuria,Synthetic Quest Demo Lab,,Urine,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0008_003,PT0008,eGFR,33914-3,48,,mL/min/1.73m2,60,,Below 60 suggests CKD,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0009_004,PT0009,HDL Cholesterol,2085-9,36,,mg/dL,40,,>40 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0009_001,PT0009,Hemoglobin A1c,4548-4,7.1,,%,4.0,5.6,Slightly above goal,Synthetic Quest Demo Lab,,Blood,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0009_003,PT0009,LDL Cholesterol,13457-7,142,,mg/dL,,,High LDL,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0009_002,PT0009,Total Cholesterol,2093-3,224,,mg/dL,,,<200 mg/dL desirable,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0009_005,PT0009,Triglycerides,2571-8,226,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0010_005,PT0010,COVID-19 PCR,94500-6,,Not detected,,,,Negative,Synthetic Demo Hospital,,Nasopharyngeal,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0010_004,PT0010,Hemoglobin,718-7,12.8,,g/dL,13.5,17.5,Slightly low,Synthetic Quest Demo Lab,,Blood,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0010_001,PT0010,Hemoglobin A1c,4548-4,6.4,,%,4.0,5.6,Prediabetes range,Synthetic Quest Demo Lab,,Blood,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0010_003,PT0010,TSH,3016-3,2.1,,mIU/L,0.4,4.0,Normal thyroid function,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0010_002,PT0010,"Vitamin D, 25-OH",1989-3,22,,ng/mL,30,100,Low vitamin D,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0011_005,PT0011,Creatinine,2160-0,0.92,,mg/dL,0.7,1.3,Normal kidney function,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0011_002,PT0011,Glucose (fasting),1558-6,92,,mg/dL,70,99,Normal fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0011_001,PT0011,Hemoglobin A1c,4548-4,5.6,,%,4.0,5.6,Normal <5.7%,Synthetic Quest Demo Lab,,Blood,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0011_003,PT0011,LDL Cholesterol,13457-7,94,,mg/dL,,,<100 mg/dL optimal,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0011_004,PT0011,eGFR,33914-3,88,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0012_002,PT0012,Glucose (fasting),1558-6,168,,mg/dL,70,99,High fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0012_001,PT0012,Hemoglobin A1c,4548-4,8.4,,%,4.0,5.6,High; diabetes not at goal,Synthetic Quest Demo Lab,,Blood,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0012_003,PT0012,LDL Cholesterol,13457-7,118,,mg/dL,,,Above optimal for diabetes,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0012_004,PT0012,Triglycerides,2571-8,184,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0012_005,PT0012,eGFR,33914-3,72,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0013_002,PT0013,Creatinine,2160-0,1.58,,mg/dL,0.7,1.3,Elevated,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0013_001,PT0013,Hemoglobin A1c,4548-4,7.6,,%,4.0,5.6,Above diabetes goal,Synthetic Quest Demo Lab,,Blood,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0013_005,PT0013,Potassium,2823-3,5.2,,mEq/L,3.5,5.1,Mildly high,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0013_004,PT0013,Urine Albumin/Creatinine Ratio,9318-7,165,,mg/g,,30,Elevated albuminuria,Synthetic Quest Demo Lab,,Urine,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0013_003,PT0013,eGFR,33914-3,48,,mL/min/1.73m2,60,,Below 60 suggests CKD,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0014_004,PT0014,HDL Cholesterol,2085-9,36,,mg/dL,40,,>40 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0014_001,PT0014,Hemoglobin A1c,4548-4,7.1,,%,4.0,5.6,Slightly above goal,Synthetic Quest Demo Lab,,Blood,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0014_003,PT0014,LDL Cholesterol,13457-7,142,,mg/dL,,,High LDL,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0014_002,PT0014,Total Cholesterol,2093-3,224,,mg/dL,,,<200 mg/dL desirable,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0014_005,PT0014,Triglycerides,2571-8,226,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0015_005,PT0015,COVID-19 PCR,94500-6,,Not detected,,,,Negative,Synthetic Demo Hospital,,Nasopharyngeal,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0015_004,PT0015,Hemoglobin,718-7,12.8,,g/dL,13.5,17.5,Slightly low,Synthetic Quest Demo Lab,,Blood,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0015_001,PT0015,Hemoglobin A1c,4548-4,6.4,,%,4.0,5.6,Prediabetes range,Synthetic Quest Demo Lab,,Blood,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0015_003,PT0015,TSH,3016-3,2.1,,mIU/L,0.4,4.0,Normal thyroid function,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0015_002,PT0015,"Vitamin D, 25-OH",1989-3,22,,ng/mL,30,100,Low vitamin D,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0016_005,PT0016,Creatinine,2160-0,0.92,,mg/dL,0.7,1.3,Normal kidney function,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0016_002,PT0016,Glucose (fasting),1558-6,92,,mg/dL,70,99,Normal fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0016_001,PT0016,Hemoglobin A1c,4548-4,5.6,,%,4.0,5.6,Normal <5.7%,Synthetic Quest Demo Lab,,Blood,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0016_003,PT0016,LDL Cholesterol,13457-7,94,,mg/dL,,,<100 mg/dL optimal,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0016_004,PT0016,eGFR,33914-3,88,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0017_002,PT0017,Glucose (fasting),1558-6,168,,mg/dL,70,99,High fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0017_001,PT0017,Hemoglobin A1c,4548-4,8.4,,%,4.0,5.6,High; diabetes not at goal,Synthetic Quest Demo Lab,,Blood,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0017_003,PT0017,LDL Cholesterol,13457-7,118,,mg/dL,,,Above optimal for diabetes,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0017_004,PT0017,Triglycerides,2571-8,184,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0017_005,PT0017,eGFR,33914-3,72,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0018_002,PT0018,Creatinine,2160-0,1.58,,mg/dL,0.7,1.3,Elevated,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0018_001,PT0018,Hemoglobin A1c,4548-4,7.6,,%,4.0,5.6,Above diabetes goal,Synthetic Quest Demo Lab,,Blood,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0018_005,PT0018,Potassium,2823-3,5.2,,mEq/L,3.5,5.1,Mildly high,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0018_004,PT0018,Urine Albumin/Creatinine Ratio,9318-7,165,,mg/g,,30,Elevated albuminuria,Synthetic Quest Demo Lab,,Urine,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0018_003,PT0018,eGFR,33914-3,48,,mL/min/1.73m2,60,,Below 60 suggests CKD,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0019_004,PT0019,HDL Cholesterol,2085-9,36,,mg/dL,40,,>40 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0019_001,PT0019,Hemoglobin A1c,4548-4,7.1,,%,4.0,5.6,Slightly above goal,Synthetic Quest Demo Lab,,Blood,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0019_003,PT0019,LDL Cholesterol,13457-7,142,,mg/dL,,,High LDL,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0019_002,PT0019,Total Cholesterol,2093-3,224,,mg/dL,,,<200 mg/dL desirable,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0019_005,PT0019,Triglycerides,2571-8,226,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0020_005,PT0020,COVID-19 PCR,94500-6,,Not detected,,,,Negative,Synthetic Demo Hospital,,Nasopharyngeal,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0020_004,PT0020,Hemoglobin,718-7,12.8,,g/dL,13.5,17.5,Slightly low,Synthetic Quest Demo Lab,,Blood,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0020_001,PT0020,Hemoglobin A1c,4548-4,6.4,,%,4.0,5.6,Prediabetes range,Synthetic Quest Demo Lab,,Blood,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0020_003,PT0020,TSH,3016-3,2.1,,mIU/L,0.4,4.0,Normal thyroid function,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0020_002,PT0020,"Vitamin D, 25-OH",1989-3,22,,ng/mL,30,100,Low vitamin D,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0021_005,PT0021,Creatinine,2160-0,0.92,,mg/dL,0.7,1.3,Normal kidney function,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0021_002,PT0021,Glucose (fasting),1558-6,92,,mg/dL,70,99,Normal fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0021_001,PT0021,Hemoglobin A1c,4548-4,5.6,,%,4.0,5.6,Normal <5.7%,Synthetic Quest Demo Lab,,Blood,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0021_003,PT0021,LDL Cholesterol,13457-7,94,,mg/dL,,,<100 mg/dL optimal,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0021_004,PT0021,eGFR,33914-3,88,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0022_002,PT0022,Glucose (fasting),1558-6,168,,mg/dL,70,99,High fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0022_001,PT0022,Hemoglobin A1c,4548-4,8.4,,%,4.0,5.6,High; diabetes not at goal,Synthetic Quest Demo Lab,,Blood,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0022_003,PT0022,LDL Cholesterol,13457-7,118,,mg/dL,,,Above optimal for diabetes,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0022_004,PT0022,Triglycerides,2571-8,184,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0022_005,PT0022,eGFR,33914-3,72,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0023_002,PT0023,Creatinine,2160-0,1.58,,mg/dL,0.7,1.3,Elevated,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0023_001,PT0023,Hemoglobin A1c,4548-4,7.6,,%,4.0,5.6,Above diabetes goal,Synthetic Quest Demo Lab,,Blood,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0023_005,PT0023,Potassium,2823-3,5.2,,mEq/L,3.5,5.1,Mildly high,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0023_004,PT0023,Urine Albumin/Creatinine Ratio,9318-7,165,,mg/g,,30,Elevated albuminuria,Synthetic Quest Demo Lab,,Urine,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0023_003,PT0023,eGFR,33914-3,48,,mL/min/1.73m2,60,,Below 60 suggests CKD,Synthetic Quest Demo Lab,,Serum,2026-05-02T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0024_004,PT0024,HDL Cholesterol,2085-9,36,,mg/dL,40,,>40 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0024_001,PT0024,Hemoglobin A1c,4548-4,7.1,,%,4.0,5.6,Slightly above goal,Synthetic Quest Demo Lab,,Blood,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0024_003,PT0024,LDL Cholesterol,13457-7,142,,mg/dL,,,High LDL,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0024_002,PT0024,Total Cholesterol,2093-3,224,,mg/dL,,,<200 mg/dL desirable,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0024_005,PT0024,Triglycerides,2571-8,226,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-05-03T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0025_005,PT0025,COVID-19 PCR,94500-6,,Not detected,,,,Negative,Synthetic Demo Hospital,,Nasopharyngeal,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0025_004,PT0025,Hemoglobin,718-7,12.8,,g/dL,13.5,17.5,Slightly low,Synthetic Quest Demo Lab,,Blood,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0025_001,PT0025,Hemoglobin A1c,4548-4,6.4,,%,4.0,5.6,Prediabetes range,Synthetic Quest Demo Lab,,Blood,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0025_003,PT0025,TSH,3016-3,2.1,,mIU/L,0.4,4.0,Normal thyroid function,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0025_002,PT0025,"Vitamin D, 25-OH",1989-3,22,,ng/mL,30,100,Low vitamin D,Synthetic Quest Demo Lab,,Serum,2026-04-26T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0026_005,PT0026,Creatinine,2160-0,0.92,,mg/dL,0.7,1.3,Normal kidney function,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0026_002,PT0026,Glucose (fasting),1558-6,92,,mg/dL,70,99,Normal fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0026_001,PT0026,Hemoglobin A1c,4548-4,5.6,,%,4.0,5.6,Normal <5.7%,Synthetic Quest Demo Lab,,Blood,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0026_003,PT0026,LDL Cholesterol,13457-7,94,,mg/dL,,,<100 mg/dL optimal,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0026_004,PT0026,eGFR,33914-3,88,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-27T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0027_002,PT0027,Glucose (fasting),1558-6,168,,mg/dL,70,99,High fasting glucose,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0027_001,PT0027,Hemoglobin A1c,4548-4,8.4,,%,4.0,5.6,High; diabetes not at goal,Synthetic Quest Demo Lab,,Blood,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0027_003,PT0027,LDL Cholesterol,13457-7,118,,mg/dL,,,Above optimal for diabetes,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0027_004,PT0027,Triglycerides,2571-8,184,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0027_005,PT0027,eGFR,33914-3,72,,mL/min/1.73m2,60,,>60,Synthetic Quest Demo Lab,,Serum,2026-04-28T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0028_002,PT0028,Creatinine,2160-0,1.58,,mg/dL,0.7,1.3,Elevated,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0028_001,PT0028,Hemoglobin A1c,4548-4,7.6,,%,4.0,5.6,Above diabetes goal,Synthetic Quest Demo Lab,,Blood,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0028_005,PT0028,Potassium,2823-3,5.2,,mEq/L,3.5,5.1,Mildly high,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0028_004,PT0028,Urine Albumin/Creatinine Ratio,9318-7,165,,mg/g,,30,Elevated albuminuria,Synthetic Quest Demo Lab,,Urine,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0028_003,PT0028,eGFR,33914-3,48,,mL/min/1.73m2,60,,Below 60 suggests CKD,Synthetic Quest Demo Lab,,Serum,2026-04-29T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0029_004,PT0029,HDL Cholesterol,2085-9,36,,mg/dL,40,,>40 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0029_001,PT0029,Hemoglobin A1c,4548-4,7.1,,%,4.0,5.6,Slightly above goal,Synthetic Quest Demo Lab,,Blood,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0029_003,PT0029,LDL Cholesterol,13457-7,142,,mg/dL,,,High LDL,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0029_002,PT0029,Total Cholesterol,2093-3,224,,mg/dL,,,<200 mg/dL desirable,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0029_005,PT0029,Triglycerides,2571-8,226,,mg/dL,,,<150 mg/dL,Synthetic Quest Demo Lab,,Serum,2026-04-30T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0030_005,PT0030,COVID-19 PCR,94500-6,,Not detected,,,,Negative,Synthetic Demo Hospital,,Nasopharyngeal,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0030_004,PT0030,Hemoglobin,718-7,12.8,,g/dL,13.5,17.5,Slightly low,Synthetic Quest Demo Lab,,Blood,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0030_001,PT0030,Hemoglobin A1c,4548-4,6.4,,%,4.0,5.6,Prediabetes range,Synthetic Quest Demo Lab,,Blood,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0030_003,PT0030,TSH,3016-3,2.1,,mIU/L,0.4,4.0,Normal thyroid function,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
+synthetic_lab_PT0030_002,PT0030,"Vitamin D, 25-OH",1989-3,22,,ng/mL,30,100,Low vitamin D,Synthetic Quest Demo Lab,,Serum,2026-05-01T10:00:00.000,2026-05-03T12:00:00.000
