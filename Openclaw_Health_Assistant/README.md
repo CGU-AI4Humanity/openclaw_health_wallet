@@ -1,6 +1,6 @@
 # OpenClaw Health Assistant — Step-by-Step Setup Guide
 
-A **local-first personal health companion** on macOS: **OpenClaw** calls MCP tools, **MedGemma** (via **Ollama**) answers using **your** data in **SQLite**—no frontier cloud model required for chat.
+A **local-first personal health companion** on macOS: **OpenClaw** calls MCP tools, **Qwen3** on **Ollama** orchestrates tool use, and answers using **your** data in **SQLite**—no frontier cloud model required. Optional **MedGemma** is available for non-tool chat only (Ollama does not expose tool calling on `medgemma:4b`).
 
 > **Medical disclaimer:** Research software only—not for diagnosis or treatment decisions.
 
@@ -22,9 +22,9 @@ You will complete these **in order**:
 | [6](#step-6-local-sqlite-database) | Initialize DB | No |
 | [7](#step-7-sqlite-mcp-server) | Python venv + tools | No |
 | [8](#step-8-register-mcp-servers-in-openclaw) | Wire SQLite + FHIR MCP | No |
-| [9](#step-9-start-ollama-and-medgemma) | Pull model, point OpenClaw at MedGemma | Start Ollama |
-| [10](#step-10-start-openclaw-and-sync-data-once) | `openclaw tui` + one-time sync prompts | **Yes** |
-| [11](#step-11-everyday-prompts-sqlite-context--medgemma) | Grounded Q&A | **Yes** |
+| [9](#step-9-start-ollama-and-local-models) | Pull **Qwen3** (MCP tools) + optional MedGemma | Start Ollama |
+| [10](#step-10-start-openclaw-and-sync-data-once) | `openclaw chat` + one-time sync prompts | **Yes** |
+| [11](#step-11-everyday-prompts-sqlite-context--local-llm) | Grounded Q&A with MCP | **Yes** |
 
 Do **not** skip to Step 9 until Steps 3–8 are done—otherwise MCP tools and credentials will be missing.
 
@@ -35,7 +35,7 @@ Do **not** skip to Step 9 until Steps 3–8 are done—otherwise MCP tools and c
 ```mermaid
 flowchart LR
   U[User] --> OC[OpenClaw]
-  OC --> MG[Ollama MedGemma]
+  OC --> QW[Ollama Qwen3 tools]
   OC --> SMCP[SQLite MCP]
   OC --> FMCP[FHIR MCP]
   SMCP --> DB[(SQLite cache)]
@@ -139,7 +139,8 @@ chmod 600 config/.env
 | `FHIR_MCP_BASE_URL` | Usually `https://mcp-fhir-server.com` | API host |
 | `APPLE_HEALTH_API_BASE_URL` | After QR pairing | Mac local sync API |
 | `APPLE_HEALTH_DEVICE_TOKEN` | After QR pairing | Pairing secret (local `.env` only) |
-| `OLLAMA_MEDGEMMA_MODEL` | e.g. `medgemma:4b` | Local LLM tag |
+| `OLLAMA_MEDGEMMA_MODEL` | e.g. `medgemma:4b` | Optional; plain chat only (no MCP tools on Ollama) |
+| `OLLAMA_TOOLS_MODEL` | e.g. `qwen3:4b` | Default agent for MCP / Steps 10–11 |
 
 ---
 
@@ -253,8 +254,21 @@ Leonard Bryant’s wiring script reads **`config/.env`** and registers both serv
 cd /path/to/openclaw_health_wallet/Openclaw_Health_Assistant
 export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh" && nvm use 24
 set -a && source config/.env && set +a
-./scripts/wire_mcp_servers.sh
+./scripts/cleanup_mcp_servers.sh
 ```
+
+Use **`cleanup_mcp_servers.sh`** (not only `wire_mcp_servers.sh`) if you previously registered **`mywellwallet-sqlite`** or see **duplicate SQLite MCP** entries in `openclaw mcp status --verbose`.
+
+### Expected MCP status
+
+You should see **at most two** servers:
+
+| Name | Role |
+| --- | --- |
+| **`openclaw-health-sqlite`** | Local SQLite (`OPENCLAW_HEALTH_DB_PATH`) |
+| **`fhir-remote`** | Hosted FHIR MCP (if `FHIR_MCP_API_KEY` is set) |
+
+**Remove:** `mywellwallet-sqlite`, duplicate SQLite entries, or stale rows in `~/.openclaw/openclaw.json` → re-run **`./scripts/cleanup_mcp_servers.sh`**.
 
 ### What this configures
 
@@ -271,28 +285,38 @@ openclaw mcp doctor fhir-remote --probe
 openclaw mcp status --verbose
 ```
 
-Both should report **ok**. If FHIR fails with 401, recheck `FHIR_MCP_API_KEY` in `config/.env` and re-run `./scripts/wire_mcp_servers.sh`.
+Both probes should report **ok**. Status should list **only** the servers above.
 
 Manual reference: [docs/MCP_CONNECTIONS.md](./docs/MCP_CONNECTIONS.md).
 
 ---
 
-## Step 9 — Start Ollama and MedGemma
+## Step 9 — Start Ollama and local models
 
-Now start the **local LLM** and bind OpenClaw to it:
+Start **Ollama**, then configure **Qwen3** for **MCP tool calling** (required for Steps 10–11):
 
 ```bash
 brew services start ollama
-ollama pull medgemma:4b
+./scripts/configure_qwen_tools.sh
 ```
 
-**64 GB RAM (e.g. iMac Pro):** optional `ollama pull medgemma:27b` or `ollama pull qwen3:4b`, then set `OLLAMA_MEDGEMMA_MODEL` in `config/.env`.
+This pulls **`qwen3:4b`** (or `OLLAMA_TOOLS_MODEL` from `config/.env`) and sets the default agent to **`ollama/qwen3:4b`**.
+
+Verify tool support:
 
 ```bash
-./scripts/configure_medgemma.sh
+ollama show qwen3:4b | grep -A3 Capabilities
+# should include: tools
 ```
 
-This sets default agent model **`ollama/medgemma:4b`** in `~/.openclaw/openclaw.json` (see [config/openclaw.medgemma.patch.json5](./config/openclaw.medgemma.patch.json5)).
+**Optional — MedGemma** (medical-tuned **text** only; **cannot** call MCP tools in Ollama today):
+
+```bash
+ollama pull medgemma:4b
+./scripts/configure_medgemma.sh   # switches default to medgemma — re-run configure_qwen_tools.sh before MCP prompts
+```
+
+**64 GB RAM:** larger tags (e.g. `qwen3:8b`, `medgemma:27b`) if `ollama show` lists **`tools`** for that tag.
 
 Quick Ollama check:
 
@@ -305,10 +329,14 @@ curl -s http://127.0.0.1:11434/api/tags | head
 
 ## Step 10 — Start OpenClaw and sync data (once)
 
+Use **local embedded chat** (no Gateway token required):
+
 ```bash
 nvm use 24
-openclaw tui
+openclaw chat
 ```
+
+(`openclaw tui` without `--local` needs a running Gateway and `OPENCLAW_GATEWAY_TOKEN`; see [OpenClaw TUI docs](https://docs.openclaw.ai/cli/tui).)
 
 Run **one prompt at a time** (copy from below; replace names/DOB with your `config/.env` values).
 
@@ -347,9 +375,9 @@ More prompts: [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md).
 
 ---
 
-## Step 11 — Everyday prompts (SQLite context → MedGemma)
+## Step 11 — Everyday prompts (SQLite context → local LLM)
 
-After Steps 10A/B, **routine questions should hit SQLite first**, then MedGemma explains. Paste this **before** your question:
+After Steps 10A/B, **routine questions should hit SQLite first** via MCP, then the model explains. Ensure **`configure_qwen_tools.sh`** was applied. Paste this **before** your question:
 
 ```text
 You must use openclaw-health-sqlite before answering.
@@ -378,7 +406,7 @@ Example questions:
 ./scripts/install_local_stack.sh
 ```
 
-Runs Steps 6–9 automation (venv, DB, MedGemma patch, MCP wire, smoke test). You still complete Steps 3–5 manually first.
+Runs Steps 6–9 automation (venv, DB, Qwen tool model, MCP cleanup/wire, smoke test). You still complete Steps 3–5 manually first.
 
 ---
 
@@ -391,8 +419,11 @@ Runs Steps 6–9 automation (venv, DB, MedGemma patch, MCP wire, smoke test). Yo
 | FHIR MCP 401 | Valid `FHIR_MCP_API_KEY`; re-run `wire_mcp_servers.sh` |
 | Wrong patient | Fix `FHIR_PATIENT_*` in `config/.env` |
 | Empty `health_*` tables | Complete Step 5 (Health Link QR pairing on Mac) |
-| Model ignores tools | Confirm `openclaw mcp status`; use explicit “must use openclaw-health-sqlite” prompts |
-| Raw JSON tool output | Ollama `baseUrl` must not use `/v1`; re-run `configure_medgemma.sh` |
+| Duplicate / stale MCP in status | `./scripts/cleanup_mcp_servers.sh` then `openclaw mcp status --verbose` |
+| Missing gateway auth token | Use **`openclaw chat`** (local mode), not plain `openclaw tui` |
+| Model ignores tools | `configure_qwen_tools.sh`; confirm `ollama show qwen3:4b` lists **tools** |
+| Raw JSON tool output | Ollama `baseUrl` must not use `/v1`; re-run `configure_qwen_tools.sh` |
+| **`provider rejected the request schema or tool payload`** | Default model lacks Ollama **tools** (e.g. `medgemma:4b`). Run **`./scripts/configure_qwen_tools.sh`**, then **`openclaw chat`**. |
 
 ---
 

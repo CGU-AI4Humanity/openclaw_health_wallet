@@ -9,7 +9,7 @@ We showcase **two complementary implementations** in one monorepo:
 | Track | Agent stack | Primary use case |
 | --- | --- | --- |
 | **ZeroClaw — Retinal Health Assistant** (Santanu Ray) | ZeroClaw + Ollama (Qwen) + custom Retina MCP | **Fundus / retinal image analysis** (RETFound retinal age, heart-risk screening) |
-| **OpenClaw — Health Assistant** (Mahesh Balan, Brandon Medina, Leonard Bryant) | OpenClaw + Ollama (MedGemma) + SQLite MCP + [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) + **[Health Link iOS](./Health_Link_iOS/)** | **General health Q&A** over **your** EHR cache, labs, and **Apple Health** metrics |
+| **OpenClaw — Health Assistant** (Mahesh Balan, Brandon Medina, Leonard Bryant) | OpenClaw + Ollama (**Qwen3** for MCP tools; optional MedGemma) + SQLite MCP + [FHIR MCP Server](https://github.com/maheshbalan/fhir-mcp-server) + **[Health Link iOS](./Health_Link_iOS/)** | **General health Q&A** over **your** EHR cache, labs, and **Apple Health** metrics |
 
 Both tracks share the same design idea: **local LLM for reasoning**, **MCP for tools**, **no requirement for GPT/Claude/etc. in the loop**.
 
@@ -58,7 +58,7 @@ flowchart TD
 **Directory:** `Openclaw_Health_Assistant/` · iPhone companion: [`Health_Link_iOS/`](./Health_Link_iOS/)  
 **Setup guide:** [Openclaw_Health_Assistant/README.md](./Openclaw_Health_Assistant/README.md)
 
-**General health companion** on macOS: OpenClaw + **MedGemma** (Ollama) with:
+**General health companion** on macOS: OpenClaw + **Qwen3** on Ollama for **MCP tool calling**, with optional **MedGemma** for non-tool chat:
 
 - **Local SQLite** — same FHIR JSON schema as MyWellWallet (`fhir_patients`, `fhir_resources`, `health_*` tables).
 - **SQLite MCP** — agent reads/writes the cache via audited tools (Brandon Medina).
@@ -68,7 +68,7 @@ flowchart TD
 ```mermaid
 flowchart LR
   U[User] --> OC[OpenClaw Gateway]
-  OC --> MG[Ollama MedGemma]
+  OC --> QW[Ollama Qwen3]
   OC --> LMCP[SQLite MCP]
   OC --> RMCP[FHIR MCP Server]
   LMCP --> DB[(Local SQLite)]
@@ -76,7 +76,7 @@ flowchart LR
   RMCP --> FHIR[FHIR backend + RAG]
 ```
 
-**Typical answer path:** User asks a question → OpenClaw pulls **context from SQLite** via MCP → MedGemma generates an answer grounded in that context. After a one-time sync, FHIR and Apple Health data live locally so you are not re-authenticating every turn.
+**Typical answer path:** User asks a question → OpenClaw pulls **context from SQLite** via MCP → **Qwen3** generates an answer grounded in that context. After a one-time sync, FHIR and Apple Health data live locally so you are not re-authenticating every turn.
 
 **When to use this track:** You want **conversational access** to **your** records, vitals, and labs with a **local** medical LLM.
 
@@ -110,10 +110,10 @@ git clone https://github.com/CGU-AI4Humanity/openclaw_health_wallet.git
 cd openclaw_health_wallet/Openclaw_Health_Assistant
 cp config/.env.example config/.env   # add API key + your name/DOB — never commit
 ./scripts/install_local_stack.sh
-nvm use 24 && openclaw tui
+nvm use 24 && openclaw chat
 ```
 
-Follow [Openclaw_Health_Assistant/README.md](./Openclaw_Health_Assistant/README.md) for Apple Health, FHIR MCP, first-run prompts, and optional **MedGemma 27B** / **Qwen** on high-RAM machines (e.g. 64 GB iMac Pro).
+Follow [Openclaw_Health_Assistant/README.md](./Openclaw_Health_Assistant/README.md) for Apple Health, FHIR MCP, first-run prompts, **`configure_qwen_tools.sh`**, and optional **MedGemma** / larger **tool-capable** models on high-RAM machines.
 
 ---
 

@@ -60,34 +60,9 @@ mkdir -p "${HOME}/.openclaw"
 grep -q 'OLLAMA_API_KEY' "${HOME}/.openclaw/.env" 2>/dev/null || \
   echo 'OLLAMA_API_KEY=ollama-local' >> "${HOME}/.openclaw/.env"
 
-PY="${ROOT}/sqlite-mcp/.venv/bin/python"
-MCP_CWD="${ROOT}/sqlite-mcp"
-DB_PATH="${OPENCLAW_HEALTH_DB_PATH:-${MYWELLWALLET_DB_PATH:-${HOME}/.openclaw-health-assistant/openclaw_health.db}}"
-
-openclaw mcp remove mywellwallet-sqlite 2>/dev/null || true
-openclaw mcp add openclaw-health-sqlite \
-  --command "${PY}" \
-  --arg server.py \
-  --cwd "${MCP_CWD}" \
-  --env "OPENCLAW_HEALTH_DB_PATH=${DB_PATH}" \
-  2>/dev/null || openclaw mcp add openclaw-health-sqlite \
-  --command "${PY}" \
-  --arg server.py \
-  --cwd "${MCP_CWD}"
-
-openclaw mcp doctor openclaw-health-sqlite --probe || true
-
-if [[ -n "${FHIR_MCP_API_KEY:-}" ]]; then
-openclaw mcp add fhir-remote \
-    --url "${FHIR_MCP_BASE_URL:-https://mcp-fhir-server.com}/mcp" \
-    --transport streamable-http \
-    --header "X-API-Key=${FHIR_MCP_API_KEY}" \
-    2>/dev/null || true
-  openclaw mcp doctor fhir-remote --probe || true
-else
-  echo "Skip FHIR MCP probe until FHIR_MCP_API_KEY is set in config/.env"
-fi
+"${ROOT}/scripts/configure_qwen_tools.sh" || true
+"${ROOT}/scripts/cleanup_mcp_servers.sh" || true
 
 echo ""
-echo "Set default model to ollama/medgemma:4b in openclaw onboarding or merge config/openclaw.example.json5 into ~/.openclaw/openclaw.json"
-echo "Run: openclaw doctor && openclaw mcp status --verbose"
+echo "Default MCP agent: ollama/qwen3:4b (configure_qwen_tools.sh)"
+echo "Run: openclaw doctor && openclaw mcp status --verbose && openclaw chat"

@@ -59,7 +59,7 @@ Add to `~/.openclaw/.env` so the daemon sees Ollama:
 OLLAMA_API_KEY=ollama-local
 ```
 
-Point the default agent model at MedGemma using [config/openclaw.example.json5](../config/openclaw.example.json5) or set in onboarding. **Do not** set `baseUrl` to `http://127.0.0.1:11434/v1` — that breaks tool calling ([Ollama provider docs](https://docs.openclaw.ai/providers/ollama)).
+Point the default agent at **Qwen3** for MCP (`./scripts/configure_qwen_tools.sh`). Optional MedGemma: `./scripts/configure_medgemma.sh` (chat only). **Do not** set `baseUrl` to `http://127.0.0.1:11434/v1` — that breaks tool calling ([Ollama provider docs](https://docs.openclaw.ai/providers/ollama)).
 
 OpenClaw recommends **≥64k context** for local agents; MedGemma 4B advertises a large window on Ollama — set `contextWindow` explicitly if doctor warns about context.
 
@@ -116,9 +116,12 @@ See [apple-health-bridge/README.md](../apple-health-bridge/README.md). On macOS,
 ## 8. End-to-end smoke test (after MCP implementations)
 
 ```bash
+./scripts/configure_qwen_tools.sh
+./scripts/cleanup_mcp_servers.sh
 openclaw mcp status --verbose
 openclaw mcp doctor fhir-remote --probe
-# openclaw mcp doctor openclaw-health-sqlite --probe
+openclaw mcp doctor openclaw-health-sqlite --probe
+openclaw chat
 ```
 
 Chat example (Control UI or CLI):
@@ -133,7 +136,9 @@ Include a medical disclaimer.
 
 | Issue | Fix |
 | --- | --- |
-| Ollama tools not discovered | Set `OLLAMA_API_KEY=ollama-local` in `~/.openclaw/.env`, restart gateway |
+| Duplicate MCP servers in status | `./scripts/cleanup_mcp_servers.sh` |
+| Ollama tools not discovered | Set `OLLAMA_API_KEY=ollama-local` in `~/.openclaw/.env` |
+| provider rejected tool payload | Use **qwen3:4b** (`configure_qwen_tools.sh`), not medgemma:4b |
 | Raw JSON tool calls in chat | Remove `/v1` from Ollama `baseUrl`; use `api: "ollama"` |
 | MCP session errors on FHIR | Match mobile flow: initialize → session id → tool calls with `X-API-Key` |
 | Empty local DB | Run `./scripts/init_db.sh`, then sync from FHIR MCP |

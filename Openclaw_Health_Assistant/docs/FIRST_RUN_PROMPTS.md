@@ -1,8 +1,17 @@
 # First-run OpenClaw prompts
 
-Use **after** [README.md](../README.md) Steps 1–9. Start with `nvm use 24 && openclaw tui`.
+Use **after** [README.md](../README.md) Steps 1–9.
 
-Replace `FHIR_PATIENT_*` placeholders with values from your gitignored **`config/.env`** (never paste keys into Git).
+**Before Step 10:**
+
+```bash
+nvm use 24
+./scripts/configure_qwen_tools.sh    # default ollama/qwen3:4b — required for MCP tools
+./scripts/cleanup_mcp_servers.sh     # openclaw-health-sqlite + fhir-remote only
+openclaw chat                        # not plain openclaw tui (avoids gateway token)
+```
+
+Replace `FHIR_PATIENT_*` placeholders with values from gitignored **`config/.env`**.
 
 > Medical disclaimer required on every health answer.
 
@@ -29,7 +38,7 @@ Medical disclaimer required.
 
 ## Prompt B — FHIR MCP → SQLite (Step 10)
 
-API key is already in OpenClaw MCP config from `wire_mcp_servers.sh` — **do not** type the key in chat.
+API key is already in OpenClaw MCP config from `cleanup_mcp_servers.sh` — **do not** type the key in chat.
 
 ```text
 Use fhir-remote, then openclaw-health-sqlite.
@@ -65,10 +74,21 @@ Medical disclaimer required.
 
 ---
 
-## Larger models (64 GB RAM)
+## Optional models
+
+**MCP / tools (default):**
 
 ```bash
-ollama pull medgemma:27b
-# Update OLLAMA_MEDGEMMA_MODEL in config/.env
-./scripts/configure_medgemma.sh
+ollama pull qwen3:4b
+./scripts/configure_qwen_tools.sh
 ```
+
+**MedGemma (plain chat only — no Ollama tools):**
+
+```bash
+ollama pull medgemma:4b
+./scripts/configure_medgemma.sh
+# Re-run configure_qwen_tools.sh before MCP prompts
+```
+
+**64 GB RAM:** use a larger **tool-capable** tag if `ollama show <tag>` lists `tools`.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# OpenClaw + Ollama MedGemma (optional plain chat — no MCP tool calling in Ollama).
+# Switch default agent to Qwen3 for reliable Ollama MCP tool calling.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,18 +12,13 @@ mkdir -p "${HOME}/.openclaw"
 grep -q 'OLLAMA_API_KEY' "${HOME}/.openclaw/.env" 2>/dev/null || \
   echo 'OLLAMA_API_KEY=ollama-local' >> "${HOME}/.openclaw/.env"
 
-if ! curl -fsS http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then
-  brew services start ollama 2>/dev/null || true
-  sleep 2
-fi
-
-MODEL="${OLLAMA_MEDGEMMA_MODEL:-medgemma:4b}"
+MODEL="${OLLAMA_TOOLS_MODEL:-qwen3:4b}"
 if ! ollama list 2>/dev/null | grep -q "${MODEL%%:*}"; then
   echo "Pulling ${MODEL}..."
   ollama pull "${MODEL}"
 fi
 
-openclaw config patch --file "${ROOT}/config/openclaw.medgemma.patch.json5"
+openclaw config patch --file "${ROOT}/config/openclaw.qwen-tools.patch.json5"
+openclaw doctor --fix 2>/dev/null || true
 openclaw config validate
-echo "Optional chat model: ollama/medgemma:4b (no Ollama tools capability)."
-echo "For MCP / Step 10 use: ./scripts/configure_qwen_tools.sh"
+echo "Default agent model: ollama/${MODEL} (MCP tool calling). Switch back to medgemma:4b in config when chatting without tools."

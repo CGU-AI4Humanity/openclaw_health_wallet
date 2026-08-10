@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full local stack: MedGemma → SQLite → MCP → FHIR → smoke test
+# Full local stack: Qwen (MCP tools) → SQLite → MCP cleanup/wire → smoke test
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -27,10 +27,10 @@ elif [[ "${COPY_FIXTURE:-}" != "" ]]; then
   "${ROOT}/scripts/copy_fixture_db.sh" "${COPY_FIXTURE}"
 fi
 
-"${ROOT}/scripts/configure_medgemma.sh"
-"${ROOT}/scripts/wire_mcp_servers.sh"
+"${ROOT}/scripts/configure_qwen_tools.sh"
+"${ROOT}/scripts/cleanup_mcp_servers.sh"
 "${ROOT}/scripts/test_local_stack.sh"
 
 echo ""
-echo "Stack ready. Chat: openclaw tui  (or Control UI)"
-echo "Apple Health: complete Setup Wizard QR pairing (Health Link iOS) or MCP import_apple_health_json for file-based import."
+echo "Stack ready. MCP sync + Q&A: nvm use 24 && openclaw chat"
+echo "Expect MCP status: openclaw-health-sqlite + fhir-remote only (run ./scripts/cleanup_mcp_servers.sh if you see duplicates)."

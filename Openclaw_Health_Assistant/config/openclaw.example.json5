@@ -3,7 +3,7 @@
 {
   agents: {
     defaults: {
-      model: "ollama/medgemma:4b",
+      model: "ollama/qwen3:4b",
     },
   },
   models: {

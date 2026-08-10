@@ -15,18 +15,24 @@ struct ContentView: View {
                     if let p = appState.pairing {
                         LabeledContent("Mac", value: "\(p.host):\(p.port)")
                         LabeledContent("Token", value: String(p.token.prefix(8)) + "…")
+                        if let sync = p.syncURL?.absoluteString {
+                            LabeledContent("Sync API", value: sync)
+                        }
+                        Text("QR scan succeeded — you do not need to paste the URL. Go to Apple Health below and tap sync.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     } else {
                         Text("Not paired")
                             .foregroundStyle(.secondary)
                     }
                     Button("Scan QR code") { showScanner = true }
-                    TextField("Or paste openclaw-health:// URL", text: $pasteText, axis: .vertical)
+                    TextField("Optional: paste openclaw-health:// URL", text: $pasteText, axis: .vertical)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                     Button("Use pasted URL") {
                         if let p = PairingConfig.parse(pastedString: pasteText) {
                             appState.pairing = p
-                            status = "Paired. Tap sync below."
+                            status = "Paired. Tap Authorize & sync to Mac below."
                         } else {
                             status = "Invalid URL"
                         }
@@ -50,9 +56,10 @@ struct ContentView: View {
             .sheet(isPresented: $showScanner) {
                 QRScannerView { code in
                     showScanner = false
+                    pasteText = code
                     if let p = PairingConfig.parse(pastedString: code) {
                         appState.pairing = p
-                        status = "Paired from QR."
+                        status = "Paired from QR. Tap Authorize & sync to Mac below."
                     } else {
                         status = "QR did not contain a valid openclaw-health URL."
                     }
