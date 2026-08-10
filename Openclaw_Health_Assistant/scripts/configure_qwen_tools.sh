@@ -12,8 +12,8 @@ mkdir -p "${HOME}/.openclaw"
 grep -q 'OLLAMA_API_KEY' "${HOME}/.openclaw/.env" 2>/dev/null || \
   echo 'OLLAMA_API_KEY=ollama-local' >> "${HOME}/.openclaw/.env"
 
-MODEL="${OLLAMA_TOOLS_MODEL:-qwen3:4b}"
-if ! ollama list 2>/dev/null | grep -q "${MODEL%%:*}"; then
+MODEL="${OLLAMA_TOOLS_MODEL:-qwen3:8b}"
+if ! ollama show "${MODEL}" >/dev/null 2>&1; then
   echo "Pulling ${MODEL}..."
   ollama pull "${MODEL}"
 fi

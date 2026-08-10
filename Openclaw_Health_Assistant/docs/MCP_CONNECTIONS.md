@@ -72,7 +72,7 @@ openclaw mcp doctor fhir-remote --probe
 
 ## LLM note (MCP tool calling)
 
-MCP prompts require an Ollama model with **`tools`** capability (default in this repo: **`qwen3:4b`** via `./scripts/configure_qwen_tools.sh`). **`medgemma:4b`** does not accept tool payloads in Ollama.
+MCP prompts require an Ollama model with **`tools`** capability (default in this repo: **`qwen3:8b`** via `./scripts/configure_qwen_tools.sh`). **`medgemma:4b`** does not accept tool payloads in Ollama.
 
 ## Troubleshooting
 

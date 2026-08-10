@@ -346,14 +346,14 @@ class WizardApp(tk.Tk):
         ttk.Label(f, text="Step 6 — Ollama + Qwen3 (MCP tools)", font=("", 14, "bold")).pack(anchor=tk.W)
         ttk.Label(
             f,
-            text="Default agent uses qwen3:4b (Ollama tools). Optional: ollama pull medgemma:4b for plain chat only.",
+            text="Default agent uses qwen3:8b (Ollama tools). Optional: ollama pull medgemma:4b for plain chat only.",
             wraplength=650,
         ).pack(anchor=tk.W, pady=4)
         self._output_panel(f, step, height=14)
 
         def run() -> None:
             self._log(step, "Pulling Qwen3 and configuring OpenClaw for MCP…", clear=True)
-            code1, _ = self._log_run(step, "ollama pull qwen3:4b", ["bash", "-lc", "ollama pull qwen3:4b"])
+            code1, _ = self._log_run(step, "ollama pull qwen3:8b", ["bash", "-lc", "ollama pull qwen3:8b"])
             code2, _ = self._log_run(
                 step,
                 "configure_qwen_tools.sh",
@@ -368,7 +368,7 @@ class WizardApp(tk.Tk):
             if code1 != 0:
                 self._log(step, "Note: ollama pull failed — model may already exist or Ollama may be offline.")
 
-        ttk.Button(f, text="Pull qwen3:4b + configure OpenClaw", command=run).pack(anchor=tk.W, pady=8)
+        ttk.Button(f, text="Pull qwen3:8b + configure OpenClaw", command=run).pack(anchor=tk.W, pady=8)
         return f
 
     def _build_ready(self) -> ttk.Frame:

@@ -138,7 +138,7 @@ Include a medical disclaimer.
 | --- | --- |
 | Duplicate MCP servers in status | `./scripts/cleanup_mcp_servers.sh` |
 | Ollama tools not discovered | Set `OLLAMA_API_KEY=ollama-local` in `~/.openclaw/.env` |
-| provider rejected tool payload | Use **qwen3:4b** (`configure_qwen_tools.sh`), not medgemma:4b |
+| provider rejected tool payload | Use **qwen3:8b** (`configure_qwen_tools.sh`), not medgemma:4b |
 | Raw JSON tool calls in chat | Remove `/v1` from Ollama `baseUrl`; use `api: "ollama"` |
 | MCP session errors on FHIR | Match mobile flow: initialize → session id → tool calls with `X-API-Key` |
 | Empty local DB | Run `./scripts/init_db.sh`, then sync from FHIR MCP |

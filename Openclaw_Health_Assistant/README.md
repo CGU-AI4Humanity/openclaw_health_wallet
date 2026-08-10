@@ -140,7 +140,7 @@ chmod 600 config/.env
 | `APPLE_HEALTH_API_BASE_URL` | After QR pairing | Mac local sync API |
 | `APPLE_HEALTH_DEVICE_TOKEN` | After QR pairing | Pairing secret (local `.env` only) |
 | `OLLAMA_MEDGEMMA_MODEL` | e.g. `medgemma:4b` | Optional; plain chat only (no MCP tools on Ollama) |
-| `OLLAMA_TOOLS_MODEL` | e.g. `qwen3:4b` | Default agent for MCP / Steps 10–11 |
+| `OLLAMA_TOOLS_MODEL` | e.g. `qwen3:8b` | Default agent for MCP / Steps 10–11 |
 
 ---
 
@@ -300,12 +300,12 @@ brew services start ollama
 ./scripts/configure_qwen_tools.sh
 ```
 
-This pulls **`qwen3:4b`** (or `OLLAMA_TOOLS_MODEL` from `config/.env`) and sets the default agent to **`ollama/qwen3:4b`**.
+This pulls **`qwen3:8b`** (or `OLLAMA_TOOLS_MODEL` from `config/.env`) and sets the default agent to **`ollama/qwen3:8b`**.
 
 Verify tool support:
 
 ```bash
-ollama show qwen3:4b | grep -A3 Capabilities
+ollama show qwen3:8b | grep -A3 Capabilities
 # should include: tools
 ```
 
@@ -421,7 +421,7 @@ Runs Steps 6–9 automation (venv, DB, Qwen tool model, MCP cleanup/wire, smoke 
 | Empty `health_*` tables | Complete Step 5 (Health Link QR pairing on Mac) |
 | Duplicate / stale MCP in status | `./scripts/cleanup_mcp_servers.sh` then `openclaw mcp status --verbose` |
 | Missing gateway auth token | Use **`openclaw chat`** (local mode), not plain `openclaw tui` |
-| Model ignores tools | `configure_qwen_tools.sh`; confirm `ollama show qwen3:4b` lists **tools** |
+| Model ignores tools | `configure_qwen_tools.sh`; confirm `ollama show qwen3:8b` lists **tools** |
 | Raw JSON tool output | Ollama `baseUrl` must not use `/v1`; re-run `configure_qwen_tools.sh` |
 | **`provider rejected the request schema or tool payload`** | Default model lacks Ollama **tools** (e.g. `medgemma:4b`). Run **`./scripts/configure_qwen_tools.sh`**, then **`openclaw chat`**. |
 

@@ -3,7 +3,7 @@
 {
   agents: {
     defaults: {
-      model: "ollama/qwen3:4b",
+      model: "ollama/qwen3:8b",
     },
   },
   models: {

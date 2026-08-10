@@ -6,7 +6,7 @@ Use **after** [README.md](../README.md) Steps 1–9.
 
 ```bash
 nvm use 24
-./scripts/configure_qwen_tools.sh    # default ollama/qwen3:4b — required for MCP tools
+./scripts/configure_qwen_tools.sh    # default ollama/qwen3:8b — required for MCP tools
 ./scripts/cleanup_mcp_servers.sh     # openclaw-health-sqlite + fhir-remote only
 openclaw chat                        # not plain openclaw tui (avoids gateway token)
 ```
@@ -79,7 +79,7 @@ Medical disclaimer required.
 **MCP / tools (default):**
 
 ```bash
-ollama pull qwen3:4b
+ollama pull qwen3:8b
 ./scripts/configure_qwen_tools.sh
 ```
 

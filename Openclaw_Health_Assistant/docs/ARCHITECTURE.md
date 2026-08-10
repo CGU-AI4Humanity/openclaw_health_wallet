@@ -14,7 +14,7 @@
 | Layer | Technology | Owner | Notes |
 | --- | --- | --- | --- |
 | Agent | OpenClaw gateway + TUI/Control UI | Mahesh Balan | MCP via `mcp.servers` ([docs](https://docs.openclaw.ai/tools/mcp)) |
-| LLM | Ollama **`qwen3:4b`** (MCP tools) · optional **`medgemma:4b`** (chat only) | Mahesh Balan | Native URL `http://127.0.0.1:11434` (no `/v1`) |
+| LLM | Ollama **`qwen3:8b`** (MCP tools) · optional **`medgemma:4b`** (chat only) | Mahesh Balan | Native URL `http://127.0.0.1:11434` (no `/v1`) |
 | Local tools | `sqlite-mcp` (FastMCP, stdio or streamable-http) | Brandon Medina (server); Leonard Bryant (OpenClaw connect) | Mirrors Santanu’s retina-mcp pattern in Zero_Claw |
 | Remote FHIR | `https://mcp-fhir-server.com/mcp` | Leonard Bryant | Streamable HTTP + `X-API-Key`, same as iOS `MCPClientSSE` |
 | Wearables | `apple-health-bridge` | Mahesh Balan | macOS Health / export / HealthKit helper → SQLite health_* tables |

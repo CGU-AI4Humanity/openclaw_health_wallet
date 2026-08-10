@@ -64,5 +64,5 @@ grep -q 'OLLAMA_API_KEY' "${HOME}/.openclaw/.env" 2>/dev/null || \
 "${ROOT}/scripts/cleanup_mcp_servers.sh" || true
 
 echo ""
-echo "Default MCP agent: ollama/qwen3:4b (configure_qwen_tools.sh)"
+echo "Default MCP agent: ollama/qwen3:8b (configure_qwen_tools.sh)"
 echo "Run: openclaw doctor && openclaw mcp status --verbose && openclaw chat"
