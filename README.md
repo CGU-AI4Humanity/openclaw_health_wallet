@@ -73,7 +73,7 @@ flowchart LR
   OC --> RMCP[FHIR MCP Server]
   LMCP --> DB[(Local SQLite)]
   HL[Health Link iOS] --> DB
-  RMCP --> FHIR[FHIR backend + RAG]
+  RMCP --> FHIR[Medplum EHR]
 ```
 
 **Typical answer path:** User asks a question → OpenClaw pulls **context from SQLite** via MCP → **Qwen3** generates an answer grounded in that context. After a one-time sync, FHIR and Apple Health data live locally so you are not re-authenticating every turn.
