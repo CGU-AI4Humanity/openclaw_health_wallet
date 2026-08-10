@@ -1,0 +1,19 @@
+# Local presentation materials (iCloud / course deck — not in git)
+presentation/
+
+# Explicit types under presentation/
+presentation/**/*.pptx
+presentation/**/*.PPTX
+presentation/**/*.docx
+presentation/**/*.DOCX
+presentation/**/*.jpg
+presentation/**/*.jpeg
+presentation/**/*.JPG
+presentation/**/*.JPEG
+presentation/**/*.png
+presentation/**/*.PNG
+presentation/**/*.pdf
+presentation/**/*.PDF
+
+# Office lock files
+presentation/**/~$*
