@@ -1,6 +1,6 @@
 # OpenClaw Health Assistant — Step-by-Step Setup Guide
 
-A **local-first health assistant** on macOS: **OpenClaw** + **Ollama (Qwen 2.5)** calls **typed health MCP tools** (no SQL in the model); Python queries **synthetic demo SQLite** built from CSV fixtures ([Brandon Medina](../Final_Project/README.md) **Final_Project**).
+A **local-first health assistant** on macOS: **OpenClaw** + **Ollama (Qwen 2.5)** calls **typed health MCP tools** (no SQL in the model); Python queries **synthetic demo SQLite** built from CSV fixtures ([Brandon Medina](../sqlite_plus_custom_mcp/README.md) **sqlite_plus_custom_mcp**).
 
 > **Medical disclaimer:** Research software only—synthetic data, not for diagnosis or treatment.
 
@@ -36,7 +36,7 @@ Ask in plain language: *What's my most recent blood pressure?* · *What's my A1C
 
 Wizard state: `~/.openclaw-health-assistant/setup_progress.json` (completed steps + saved logs).
 
-Details: [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md) · [setup-wizard/README.md](./setup-wizard/README.md) · [Final_Project](../Final_Project/README.md)
+Details: [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md) · [setup-wizard/README.md](./setup-wizard/README.md) · [sqlite_plus_custom_mcp](../sqlite_plus_custom_mcp/README.md)
 
 ---
 

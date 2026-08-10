@@ -322,7 +322,7 @@ def seed_database(database_path: Path, csv_dir: Path) -> dict[str, int]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Create and seed final_project.db from Final_Project/data CSV files."
+        description="Create and seed final_project.db from demo/csv (sqlite_plus_custom_mcp fixtures)."
     )
     parser.add_argument(
         "--database",

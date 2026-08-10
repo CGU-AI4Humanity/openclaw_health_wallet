@@ -9,7 +9,7 @@ We showcase **two complementary implementations** in one monorepo:
 | Track | Agent stack | Primary use case |
 | --- | --- | --- |
 | **ZeroClaw — Retinal Health Assistant** (Santanu Ray) | ZeroClaw + Ollama (Qwen) + custom Retina MCP | **Fundus / retinal image analysis** (RETFound retinal age, heart-risk screening) |
-| **OpenClaw — Health Assistant** (Brandon Medina, Mahesh Balan, Leonard Bryant) | OpenClaw + Ollama (**Qwen 2.5 7B**) + **typed health MCP** + synthetic demo DB ([Final_Project](./Final_Project/)); optional Apple Health / FHIR legacy paths | **Natural-language Q&A** over **vitals & labs** (demo: `PT0001`) |
+| **OpenClaw — Health Assistant** (Brandon Medina, Mahesh Balan, Leonard Bryant) | OpenClaw + Ollama (**Qwen 2.5 7B**) + **typed health MCP** + synthetic demo DB ([sqlite_plus_custom_mcp](./sqlite_plus_custom_mcp/)); optional Apple Health / FHIR legacy paths | **Natural-language Q&A** over **vitals & labs** (demo: `PT0001`) |
 
 Both tracks share the same design idea: **local LLM for reasoning**, **MCP for tools**, **no requirement for GPT/Claude/etc. in the loop**.
 

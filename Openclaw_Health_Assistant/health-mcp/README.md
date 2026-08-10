@@ -1,6 +1,6 @@
 # Health MCP (typed tools)
 
-Custom MCP server from [Final_Project](../../Final_Project/README.md). The LLM never writes SQL—it calls named tools; Python returns structured vitals/labs with interpretation fields.
+Custom MCP server from [sqlite_plus_custom_mcp](../../sqlite_plus_custom_mcp/README.md). The LLM never writes SQL—it calls named tools; Python returns structured vitals/labs with interpretation fields.
 
 ```bash
 ./scripts/setup_health_mcp_venv.sh

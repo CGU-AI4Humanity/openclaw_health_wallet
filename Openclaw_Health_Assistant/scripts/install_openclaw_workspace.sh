@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copy AGENTS.md into OpenClaw workspace (Brandon Medina Final_Project flow)
+# Copy AGENTS.md into OpenClaw workspace (Brandon Medina sqlite_plus_custom_mcp flow)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

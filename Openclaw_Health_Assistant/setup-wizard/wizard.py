@@ -235,7 +235,7 @@ class WizardApp(tk.Tk):
         ttk.Label(f, text="Step 2 — Demo database + health MCP venv", font=("", 14, "bold")).pack(anchor=tk.W)
         ttk.Label(
             f,
-            text="Seeds synthetic CSV data (Brandon Medina Final_Project) and installs the typed health MCP server.",
+            text="Seeds synthetic CSV data (Brandon Medina sqlite_plus_custom_mcp) and installs the typed health MCP server.",
             wraplength=650,
         ).pack(anchor=tk.W, pady=4)
         self._step_banner(f, step)

@@ -1,3 +1,3 @@
-# Pin MCP 1.x — FastMCP API used by health-mcp (see Final_Project/README.md)
+# Pin MCP 1.x — FastMCP API used by health-mcp (see sqlite_plus_custom_mcp/README.md)
 mcp>=1.2,<2
 pydantic>=2.0

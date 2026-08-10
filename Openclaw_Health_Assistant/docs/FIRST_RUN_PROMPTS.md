@@ -58,4 +58,4 @@ FHIR_PATIENT_DOB=1972-08-02
 
 ## Legacy: remote FHIR + Apple Health
 
-The older **`openclaw-health-sqlite`** + **`fhir-remote`** flow remains in git history; the class path is **`health`** MCP + **`demo/csv`** (see [Final_Project](../../Final_Project/README.md)).
+The older **`openclaw-health-sqlite`** + **`fhir-remote`** flow remains in git history; the class path is **`health`** MCP + **`demo/csv`** (see [sqlite_plus_custom_mcp](../../sqlite_plus_custom_mcp/README.md)).

@@ -5,7 +5,7 @@ import os
 import sys
 from pathlib import Path
 
-DB_PATH: Path = Path(os.environ.get("HEALTH_DB_PATH", "Final_Project/final_project.db")).resolve()
+DB_PATH: Path = Path(os.environ.get("HEALTH_DB_PATH", "sqlite_plus_custom_mcp/final_project.db")).resolve()
 
 ACTIVE_USER_ID: str | None = os.environ.get("HEALTH_ACTIVE_USER_ID")
 

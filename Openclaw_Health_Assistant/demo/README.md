@@ -1,4 +1,4 @@
-# Demo synthetic data (Brandon Medina Final_Project)
+# Demo synthetic data (Brandon Medina sqlite_plus_custom_mcp)
 
 CSV fixtures under `csv/` seed `final_project.db` via `seed_database.py`.
 

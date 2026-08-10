@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build synthetic demo DB from demo/csv (Brandon Medina Final_Project fixture)
+# Build synthetic demo DB from demo/csv (Brandon Medina sqlite_plus_custom_mcp fixture)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

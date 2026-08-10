@@ -69,7 +69,7 @@ You ─▶ OpenClaw (agent + MCP client) ─▶ Ollama (llama3.2 / qwen2.5)
 Throughout, replace `PROJECT_DIR` with the absolute path to this repo, e.g.:
 
 ```bash
-export PROJECT_DIR="$HOME/Documents/Codebase/IST_362/Final_Project"
+export PROJECT_DIR="$HOME/openclaw_health_wallet/sqlite_plus_custom_mcp"
 ```
 
 > **Absolute paths matter.** OpenClaw launches the MCP server as a background
