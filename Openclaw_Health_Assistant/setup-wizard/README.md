@@ -1,18 +1,24 @@
 # Setup Wizard
 
-macOS **Tkinter** assistant for OpenClaw Health Assistant onboarding:
+macOS **Tkinter** assistant for the **health MCP demo stack**:
 
 ```bash
-../scripts/run_setup_wizard.sh
+./scripts/run_setup_wizard.sh
 ```
 
-- Verifies prerequisites (Node 24, Ollama, OpenClaw, Python)
-- Initializes SQLite and the SQLite MCP virtual environment
-- Captures FHIR API key and patient identity → `config/.env`
-- Registers MCP servers
-- Displays QR and runs the local Apple Health pairing API
-- Configures **Qwen3** for OpenClaw MCP tool calling
-- Persists resume state in `~/.openclaw-health-assistant/setup_progress.json`
-- Each tab includes an **action log** showing commands run and their output
+| Tab | Action |
+|-----|--------|
+| 1 Prereqs | Node 24, Ollama, OpenClaw, Python, sqlite3 |
+| 2 Demo DB | Seed `final_project.db` + health MCP venv |
+| 3 Patient | PT0001, FHIR name/DOB, API key → `config/.env` + SQLite sync |
+| 4 MCP | `health` + optional `fhir-remote` probe |
+| 5 Apple Hlth | QR pairing (optional) or **Skip** for synthetic demo |
+| 6 Qwen 2.5 | `qwen2.5:7b` + tool allowlist + `AGENTS.md` |
+| 7 Ready | Mark complete · **Re-verify setup** |
 
-See [docs/SETUP_WIZARD_AND_APPLE_HEALTH.md](../docs/SETUP_WIZARD_AND_APPLE_HEALTH.md).
+**Tonight:** Step 1 → **Run complete setup (all steps)**.  
+**Tomorrow:** Re-open the wizard — tabs show **✓**, action logs restored from `~/.openclaw-health-assistant/setup_progress.json`. Walk through each tab for the demo.
+
+To start fresh: `rm ~/.openclaw-health-assistant/setup_progress.json`
+
+See [docs/SETUP_WIZARD_AND_APPLE_HEALTH.md](../docs/SETUP_WIZARD_AND_APPLE_HEALTH.md) (Apple Health Link).

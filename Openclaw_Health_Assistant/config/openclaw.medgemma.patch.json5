@@ -10,7 +10,7 @@
         baseUrl: "http://127.0.0.1:11434",
         apiKey: "ollama-local",
         api: "ollama",
-        timeoutSeconds: 300,
+        timeoutSeconds: 600,
         models: [
           {
             id: "medgemma:4b",

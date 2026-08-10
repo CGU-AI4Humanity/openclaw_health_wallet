@@ -1,14 +1,64 @@
 # OpenClaw Health Assistant — Step-by-Step Setup Guide
 
-A **local-first personal health companion** on macOS: **OpenClaw** calls MCP tools, **Qwen3** on **Ollama** orchestrates tool use, and answers using **your** data in **SQLite**—no frontier cloud model required. Optional **MedGemma** is available for non-tool chat only (Ollama does not expose tool calling on `medgemma:4b`).
+A **local-first health assistant** on macOS: **OpenClaw** + **Ollama (Qwen 2.5)** calls **typed health MCP tools** (no SQL in the model); Python queries **synthetic demo SQLite** built from CSV fixtures ([Brandon Medina](../Final_Project/README.md) **Final_Project**).
 
-> **Medical disclaimer:** Research software only—not for diagnosis or treatment decisions.
+> **Medical disclaimer:** Research software only—synthetic data, not for diagnosis or treatment.
 
-**Contributors:** Mahesh Balan (integration, Apple Health, PM) · Brandon Medina (SQLite + SQLite MCP) · Leonard Bryant (OpenClaw MCP wiring). See [CONTRIBUTORS.md](./CONTRIBUTORS.md). Monorepo overview: [../README.md](../README.md).
+**Contributors:** Brandon Medina (health MCP, demo data, Qwen 2.5 stack) · Mahesh Balan (integration, Apple Health) · Leonard Bryant (OpenClaw wiring). See [CONTRIBUTORS.md](./CONTRIBUTORS.md).
 
 ---
 
-## Before you start (checklist)
+## Quick start (recommended)
+
+One script after Node 24, Ollama, and OpenClaw CLI are installed:
+
+```bash
+cd openclaw_health_wallet/Openclaw_Health_Assistant
+nvm use 24
+brew services start ollama
+./scripts/install_local_stack.sh
+openclaw chat
+```
+
+Ask in plain language: *What's my most recent blood pressure?* · *What's my A1C?* · *List my recent lab results.*
+
+- **Model:** `ollama/qwen2.5:7b` (`ollama show qwen2.5:7b | grep tools`)
+- **MCP server:** `health` (8 tools: `health__get_latest_blood_pressure`, …)
+- **Demo patient:** `PT0001` in `config/.env` (`HEALTH_ACTIVE_USER_ID`)
+- **Agent rules:** [docs/AGENTS.md](./docs/AGENTS.md) (copied to `~/.openclaw/workspace/` by configure script)
+
+**Setup wizard (GUI):** `./scripts/run_setup_wizard.sh`
+
+| When | What to do |
+|------|------------|
+| **Tonight** | Open wizard → **Run complete setup (all steps)** on tab 1. Confirm every tab shows **✓** and has an action log. |
+| **Before presenting** | Open wizard — tabs show **✓** and saved logs. Walk tabs 1→7; on tab 7 optional **Re-verify setup**. For live Health Link, tab 5 → **Start pairing + show QR**. Then `openclaw chat`. |
+
+Wizard state: `~/.openclaw-health-assistant/setup_progress.json` (completed steps + saved logs).
+
+Details: [docs/FIRST_RUN_PROMPTS.md](./docs/FIRST_RUN_PROMPTS.md) · [setup-wizard/README.md](./setup-wizard/README.md) · [Final_Project](../Final_Project/README.md)
+
+---
+
+## Setup wizard tabs (summary)
+
+1. **Prerequisites** — Node 24, Ollama, OpenClaw CLI  
+2. **Demo DB** — Synthetic CSV → `final_project.db`, health MCP Python venv  
+3. **Patient** — `PT0001` aligned with FHIR demo identity (Ruben688 Waters156); `FHIR_MCP_API_KEY` for connectivity demo  
+4. **MCP** — Register `health` (+ `fhir-remote` probe when key set); chat uses `health__*` tools only  
+5. **Apple Health** — Health Link QR (optional) or Skip  
+6. **Qwen 2.5** — `ollama/qwen2.5:7b`, tool allowlist, workspace `AGENTS.md`  
+7. **Ready** — Mark complete / re-verify  
+
+CLI equivalent: `./scripts/install_local_stack.sh` or `./scripts/reset_health_demo_setup.sh`
+
+---
+
+## Legacy path (FHIR pull + generic SQLite MCP)
+
+Older step-by-step docs below are **not** the default demo. Use only for research.
+
+## Before you start (legacy checklist)
 
 You will complete these **in order**:
 
@@ -52,15 +102,11 @@ flowchart LR
 
 ## Recommended path: Setup Wizard
 
-The Mac setup assistant walks through install verification, FHIR credentials, QR-based Apple Health pairing, and resumable progress:
-
 ```bash
 ./scripts/run_setup_wizard.sh
 ```
 
-Design and iPhone companion plan: **[docs/SETUP_WIZARD_AND_APPLE_HEALTH.md](./docs/SETUP_WIZARD_AND_APPLE_HEALTH.md)**.
-
-Manual steps below match the same order if you prefer the terminal.
+Use **Run complete setup (all steps)** once, then reopen the wizard on demo day to show completed tabs and logs. Apple Health: [docs/SETUP_WIZARD_AND_APPLE_HEALTH.md](./docs/SETUP_WIZARD_AND_APPLE_HEALTH.md).
 
 ## Step 1 — Clone the repository
 

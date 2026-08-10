@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
-"""Remove legacy duplicate MCP entries from ~/.openclaw/openclaw.json."""
+"""Remove legacy MCP server keys from ~/.openclaw/openclaw.json."""
 
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
+
+KEEP = {"health", "fhir-remote"}
 
 LEGACY_KEYS = {
     "mywellwallet-sqlite",
     "mywellwallet_sqlite",
     "openclaw_health_sqlite",
+    "openclaw-health-sqlite",
+    "fhir-remote",
+    "health-mcp",
 }
 
 
@@ -23,6 +27,8 @@ def prune(path: Path) -> list[str]:
         return []
     removed: list[str] = []
     for key in list(servers.keys()):
+        if key in KEEP:
+            continue
         if key in LEGACY_KEYS or "mywellwallet" in key.lower():
             del servers[key]
             removed.append(key)

@@ -1,94 +1,61 @@
-# First-run OpenClaw prompts
+# First-run prompts (Brandon Medina health MCP + synthetic demo DB)
 
-Use **after** [README.md](../README.md) Steps 1–9.
-
-**Before Step 10:**
+Use **after** [README.md](../README.md) quick start or the setup wizard.
 
 ```bash
+cd Openclaw_Health_Assistant
 nvm use 24
-./scripts/configure_qwen_tools.sh    # default ollama/qwen3:8b — required for MCP tools
-./scripts/cleanup_mcp_servers.sh     # openclaw-health-sqlite + fhir-remote only
-openclaw chat                        # not plain openclaw tui (avoids gateway token)
+./scripts/install_local_stack.sh    # seed demo DB, health MCP, qwen2.5:7b, tool allowlist
+openclaw chat
 ```
 
-Replace `FHIR_PATIENT_*` placeholders with values from gitignored **`config/.env`**.
+**Model:** `ollama/qwen2.5:7b` only for tool calling (`ollama show qwen2.5:7b | grep tools`).
 
-> Medical disclaimer required on every health answer.
+**Do not use MedGemma or raw SQLite/FHIR MCP** for this demo — the agent uses typed **`health__*`** tools only.
 
----
-
-## Prompt A — Apple Health (Step 10)
-
-After **Health Link** QR pairing and a successful POST to the Mac pairing API:
+In chat (optional, speeds up Qwen):
 
 ```text
-Use only openclaw-health-sqlite tools.
-
-1. get_current_user → user_id
-2. get_apple_health_sync_status for that user_id
-3. If health_* tables are empty, stop and tell me to complete Setup Wizard Apple Health pairing
-   (Health Link iOS → scan QR → authorize sync). Do not import from other apps' databases.
-4. health_metrics_summary for user_id
-5. Summarize steps, heart rate, glucose, BP, labs availability.
-
-Medical disclaimer required.
+/think off
+/verbose on
 ```
+
+> Medical disclaimer: synthetic data; not medical advice.
 
 ---
 
-## Prompt B — FHIR MCP → SQLite (Step 10)
+## Example questions (no paste prompt required)
 
-API key is already in OpenClaw MCP config from `cleanup_mcp_servers.sh` — **do not** type the key in chat.
+Ask in plain language after `openclaw chat`:
 
-```text
-Use fhir-remote, then openclaw-health-sqlite.
+- What's my most recent blood pressure?
+- What's my latest glucose reading?
+- What was my most recent A1C, and is it in range?
+- List my recent lab results.
 
-Patient identity (from my local config, do not ask again):
-  First: <FHIR_PATIENT_FIRST_NAME>
-  Last: <FHIR_PATIENT_LAST_NAME>
-  DOB: <FHIR_PATIENT_DOB>
-
-1. Find and fetch my FHIR resources (Patient, Condition, Observation,
-   MedicationRequest, Immunization, Encounter).
-2. upsert_fhir_patient / upsert_fhir_resource into local SQLite.
-3. sqlite_health and list_fhir_patients to confirm.
-
-Medical disclaimer required.
-```
+The agent should call **`health__get_*`** tools and narrate structured results (`range_status`, `trend`).
 
 ---
 
-## Prompt C — Grounded Q&A (Step 11)
+## Demo patient
 
-```text
-You MUST call openclaw-health-sqlite before answering.
+Default active patient: **`PT0001`** (`HEALTH_ACTIVE_USER_ID` in `config/.env`).
 
-1. Retrieve relevant fhir_resources and health_* rows for my question.
-2. Answer using only that data plus general education.
-3. Offer fhir-remote refresh only if data looks missing or I ask for "latest from server".
-
-Question: <your question>
-
-Medical disclaimer required.
-```
-
----
-
-## Optional models
-
-**MCP / tools (default):**
+Align local demo identity with your FHIR demo patient (same name/DOB, no FHIR pull in chat):
 
 ```bash
-ollama pull qwen3:8b
-./scripts/configure_qwen_tools.sh
+# config/.env
+FHIR_PATIENT_FIRST_NAME=Ruben688
+FHIR_PATIENT_LAST_NAME=Waters156
+FHIR_PATIENT_DOB=1972-08-02
+
+./scripts/sync_demo_patient_from_env.sh
 ```
 
-**MedGemma (plain chat only — no Ollama tools):**
+**FHIR MCP (demo connectivity only):** set `FHIR_MCP_API_KEY`, run `./scripts/cleanup_mcp_servers.sh`, then `openclaw mcp doctor fhir-remote --probe`. Chat answers still use **`health__*`** tools only.
 
-```bash
-ollama pull medgemma:4b
-./scripts/configure_medgemma.sh
-# Re-run configure_qwen_tools.sh before MCP prompts
-```
+---
 
-**64 GB RAM:** use a larger **tool-capable** tag if `ollama show <tag>` lists `tools`.
+## Legacy: remote FHIR + Apple Health
+
+The older **`openclaw-health-sqlite`** + **`fhir-remote`** flow remains in git history; the class path is **`health`** MCP + **`demo/csv`** (see [Final_Project](../../Final_Project/README.md)).

@@ -1,0 +1,15 @@
+// Qwen 2.5 7B default for health MCP (model row may already exist from Ollama discovery).
+{
+  agents: {
+    defaults: {
+      model: "ollama/qwen2.5:7b",
+    },
+  },
+  models: {
+    providers: {
+      ollama: {
+        timeoutSeconds: 900,
+      },
+    },
+  },
+}

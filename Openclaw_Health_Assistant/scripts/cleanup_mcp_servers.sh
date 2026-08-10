@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Remove legacy MCP registrations and re-wire: openclaw-health-sqlite + fhir-remote only.
+# Wire health MCP only (Brandon Medina typed tools + synthetic demo DB).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,26 +12,24 @@ LEGACY_NAMES=(
   mywellwallet-sqlite
   mywellwallet_sqlite
   openclaw_health_sqlite
+  openclaw-health-sqlite
 )
 
-echo "=== Prune ~/.openclaw/openclaw.json (legacy SQLite MCP keys) ==="
+echo "=== Prune legacy MCP keys ==="
 python3 "${ROOT}/scripts/prune_mcp_config.py"
 
-echo "=== openclaw mcp remove (legacy CLI names) ==="
+echo "=== openclaw mcp remove (legacy) ==="
 for name in "${LEGACY_NAMES[@]}"; do
-  if openclaw mcp remove "${name}" 2>/dev/null; then
-    echo "Removed CLI registration: ${name}"
-  fi
+  openclaw mcp remove "${name}" 2>/dev/null || true
 done
 
 python3 "${ROOT}/scripts/prune_mcp_config.py"
 
-echo "=== Re-wire openclaw-health-sqlite + fhir-remote ==="
+echo "=== Wire health MCP ==="
 "${ROOT}/scripts/wire_mcp_servers.sh"
 
-echo "=== Final prune (wire must not reintroduce mywellwallet-sqlite) ==="
 python3 "${ROOT}/scripts/prune_mcp_config.py"
 
 echo ""
-echo "Expected: fhir-remote + openclaw-health-sqlite only."
+echo "Expected: health (+ fhir-remote when FHIR_MCP_API_KEY is set)."
 openclaw mcp status --verbose 2>/dev/null || true

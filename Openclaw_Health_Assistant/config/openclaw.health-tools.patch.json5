@@ -1,0 +1,15 @@
+// Restrict agent to Brandon health MCP tools only (see docs/AGENTS.md).
+{
+  tools: {
+    allow: [
+      "health__ping",
+      "health__get_patient",
+      "health__get_latest_blood_pressure",
+      "health__get_latest_glucose",
+      "health__get_latest_heart_rate",
+      "health__list_lab_tests",
+      "health__get_lab_results",
+      "health__get_recent_lab_results",
+    ],
+  },
+}

@@ -77,7 +77,7 @@ def import_health_json_export(
                 item.get("id", str(uuid.uuid4())),
                 user_id,
                 int(item["count"]),
-                item.get("distance_meters"),
+                float(item.get("distance_meters") or 0.0),
                 item["start_at"],
                 item["end_at"],
                 item.get("source_bundle_id"),

@@ -1,0 +1,15 @@
+// Slow local Ollama + multi-step MCP (FHIR fetch). Provider timeout also raises LLM idle watchdog (~120s default).
+{
+  agents: {
+    defaults: {
+      timeoutSeconds: 900,
+    },
+  },
+  models: {
+    providers: {
+      ollama: {
+        timeoutSeconds: 900,
+      },
+    },
+  },
+}

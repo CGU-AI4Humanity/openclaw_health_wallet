@@ -7,7 +7,7 @@ import shutil
 import sqlite3
 from pathlib import Path
 
-DEFAULT_DB = Path.home() / ".openclaw-health-assistant" / "openclaw_health.db"
+DEFAULT_DB = Path.home() / ".openclaw-health-assistant" / "final_project.db"
 LEGACY_DB = Path.home() / ".openclaw-health-assistant" / "mywellwallet.db"
 
 
@@ -18,11 +18,32 @@ def expand_path(raw: str) -> Path:
 
 def resolve_db_path(env: dict[str, str]) -> Path:
     raw = (
-        env.get("OPENCLAW_HEALTH_DB_PATH")
+        env.get("HEALTH_DB_PATH")
+        or env.get("OPENCLAW_HEALTH_DB_PATH")
         or env.get("MYWELLWALLET_DB_PATH")
         or str(DEFAULT_DB)
     )
     return expand_path(raw)
+
+
+def ensure_apple_health_tables(db: Path) -> None:
+    """Add Health Link metadata table if missing (demo DB from seed_database.py)."""
+    conn = sqlite3.connect(str(db))
+    try:
+        conn.executescript(
+            """
+            CREATE TABLE IF NOT EXISTS health_sync_settings (
+              user_id TEXT PRIMARY KEY,
+              sync_interval_hours INTEGER NOT NULL DEFAULT 24,
+              last_synced_at TEXT,
+              connected_at TEXT NOT NULL,
+              updated_at TEXT NOT NULL
+            );
+            """
+        )
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def ensure_database(db: Path, schema_sql: Path) -> tuple[bool, str]:
@@ -54,27 +75,46 @@ def ensure_database(db: Path, schema_sql: Path) -> tuple[bool, str]:
     return True, "\n".join(lines)
 
 
-def ensure_local_user(db: Path, user_id: str = "local_user_1") -> tuple[str, str]:
-    """Ensure at least one users row exists for Health Link sync."""
-    import sqlite3
+def ensure_local_user(
+    db: Path,
+    user_id: str | None = None,
+    env: dict[str, str] | None = None,
+) -> tuple[str, str]:
+    """Prefer HEALTH_ACTIVE_USER_ID (demo PT0001) so Apple Health updates the same patient."""
     from datetime import datetime, timezone
+
+    env = env or {}
+    preferred = user_id or env.get("HEALTH_ACTIVE_USER_ID") or "PT0001"
+    ensure_apple_health_tables(db)
 
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     conn = sqlite3.connect(str(db))
     try:
+        row = conn.execute("SELECT id FROM users WHERE id = ?", (preferred,)).fetchone()
+        if row:
+            return preferred, f"Using user_id {preferred} (Health Link → health_* for this patient)"
+
         row = conn.execute(
             "SELECT id FROM users ORDER BY created_at DESC LIMIT 1"
         ).fetchone()
         if row:
             return row[0], f"Using existing user_id: {row[0]}"
+
         conn.execute(
             """
-            INSERT INTO users (id, name, email, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (id, name, email, date_of_birth, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (user_id, "Local User", "local@openclaw.health", now, now),
+            (
+                preferred,
+                "Local User",
+                "local@openclaw.health",
+                "1990-01-01T00:00:00.000",
+                now,
+                now,
+            ),
         )
         conn.commit()
-        return user_id, f"Created local user_id: {user_id}"
+        return preferred, f"Created user_id: {preferred}"
     finally:
         conn.close()
